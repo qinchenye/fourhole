@@ -286,9 +286,6 @@ def get_interaction_mat(A, sym):
         AorB_sym = 1
         fac = np.sqrt(2)
         
-        # TODO: record matrix size
-        Nmax = 4
-        
         state_order = {('d3z2r2','d3z2r2'): 0,\
                        ('dx2y2','dx2y2')  : 1,\
                        ('dxy','dxy')      : 2,\
@@ -897,7 +894,6 @@ def create_edep_diag_matrix(VS,ANi,ACu,epNi,epCu):
         diag_el += util.get_orb_edep(orb3,z3,epCu,epNi)
         diag_el += util.get_orb_edep(orb4,z4,epCu,epNi)
         
-        
         data.append(diag_el); row.append(i); col.append(i)
 #         print (i, diag_el)
 
@@ -924,8 +920,9 @@ def get_double_occu_list(VS):
     idx, hole3state, dp_orb, dp_pos record detailed info of states
     '''
     dim = VS.dim
-    d_Ni_list = []; d_Cu_list = []; p_list = []
-    idx = []; hole34_Cu_part = [];  double_Cu_part = []; hole34_Ni_part = []; double_Ni_part = []
+    d_Ni_list = []; idx_Ni = []; hole3_Ni_part = []; hole4_Ni_part = []; double_Ni_part = [];  
+    d_Cu_list = []; idx_Cu = []; hole3_Cu_part = []; hole4_Cu_part = []; double_Cu_part = []; 
+    p_list = []
     
     for i in range(0,dim):
         state = VS.get_state(VS.lookup_tbl[i])
@@ -941,52 +938,75 @@ def get_double_occu_list(VS):
         x2, y2, z2 = state['hole2_coord']
         x3, y3, z3 = state['hole3_coord']
         x4, y4, z4 = state['hole4_coord']
-                   
-      
         
         # find out which two holes are on Ni/Cu
         # idx is to label which hole is not on Ni/Cu
-        if (x3, y3, z3)==(x4, y4, z4):
-            util.get_double_append(i,12,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,\
-                               p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                               d_Cu_list,hole34_Cu_part, double_Cu_part)
-        
         if (x1, y1, z1)==(x2, y2, z2):
-            util.get_double_append(i,34,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,\
-                               p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                               d_Cu_list,hole34_Cu_part, double_Cu_part)
+            if z1==1:
+                util.get_double_append(i,34,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,\
+                                   d_Ni_list,p_list,idx_Ni,hole3_Ni_part,hole4_Ni_part, double_Ni_part)
+            if z1==0:
+                util.get_double_append(i,34,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,\
+                                   d_Cu_list,p_list,idx_Cu,hole3_Cu_part,hole4_Cu_part, double_Cu_part)
                 
             
         if (x1, y1, z1)==(x3, y3, z3):
-            util.get_double_append(i,24,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,\
-                               p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                               d_Cu_list,hole34_Cu_part, double_Cu_part)
-                              
-        if (x2, y2, z2)==(x4, y4, z4):
-            util.get_double_append(i,13,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,\
-                              p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                               d_Cu_list,hole34_Cu_part, double_Cu_part)
+            if z1==1:
+                util.get_double_append(i,24,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,\
+                                   d_Ni_list,p_list,idx_Ni,hole3_Ni_part,hole4_Ni_part, double_Ni_part)
+            if z1==0:
+                util.get_double_append(i,24,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,\
+                                   d_Cu_list,p_list,idx_Cu,hole3_Cu_part,hole4_Cu_part, double_Cu_part)                
 
-        if (x2, y2, z2)==(x3, y3, z3):         
-            util.get_double_append(i,14,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,\
-                               p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                               d_Cu_list,hole34_Cu_part, double_Cu_part)
-
+                    
         if (x1, y1, z1)==(x4, y4, z4):
-            util.get_double_append(i,23,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,\
-                               p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                               d_Cu_list,hole34_Cu_part, double_Cu_part)             
+            if z1==1: 
+                util.get_double_append(i,23,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,\
+                                   d_Ni_list,p_list,idx_Ni,hole3_Ni_part,hole4_Ni_part, double_Ni_part)
+            if z1==0: 
+                util.get_double_append(i,23,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,\
+                                   d_Cu_list,p_list,idx_Cu,hole3_Cu_part,hole4_Cu_part, double_Cu_part)  
+         
+        
+        if (x2, y2, z2)==(x3, y3, z3):
+            if z2==1:            
+                util.get_double_append(i,14,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,\
+                                   d_Ni_list,p_list,idx_Ni,hole3_Ni_part,hole4_Ni_part, double_Ni_part)
+            if z2==0:            
+                util.get_double_append(i,14,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,\
+                                   d_Cu_list,p_list,idx_Cu,hole3_Cu_part,hole4_Cu_part, double_Cu_part)
                 
-       
+                
+        if (x2, y2, z2)==(x4, y4, z4):
+            if z2==1:
+                util.get_double_append(i,13,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,\
+                                   d_Ni_list,p_list,idx_Ni,hole3_Ni_part,hole4_Ni_part, double_Ni_part)
+            if z2==0:
+                util.get_double_append(i,13,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,\
+                                   d_Cu_list,p_list,idx_Cu,hole3_Cu_part,hole4_Cu_part, double_Cu_part) 
+              
+                
+        if (x3, y3, z3)==(x4, y4, z4):
+            if z3==1:
+                util.get_double_append(i,12,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,\
+                                   d_Ni_list,p_list,idx_Ni,hole3_Ni_part,hole4_Ni_part, double_Ni_part)
+            if z3==0:
+                util.get_double_append(i,12,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,\
+                                   d_Cu_list,p_list,idx_Cu,hole3_Cu_part,hole4_Cu_part, double_Cu_part)
+                
+                
     print ("len(d_Ni_list)", len(d_Ni_list))
     print ("len(d_Cu_list)", len(d_Cu_list))    
     print ("len(p_list)", len(p_list))
-    print ("len(idx)", len(idx))
+    print ("len(idx_Ni)", len(idx_Ni))
+    print ("len(idx_Cu)", len(idx_Cu))
 
     
-    return d_Ni_list,d_Cu_list, p_list,double_Ni_part,hole34_Ni_part ,double_Cu_part, hole34_Cu_part  ,idx
+    return d_Ni_list, idx_Ni, hole3_Ni_part, hole4_Ni_part, double_Ni_part, \
+           d_Cu_list, idx_Cu, hole3_Cu_part, hole4_Cu_part, double_Cu_part, \
+           p_list
 
-def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole34_part , \
+def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole3_part ,hole4_part, \
                                        S_val, Sz_val, AorB_sym,ACu, ANi, Upp):
     '''
     Create Coulomb-exchange interaction matrix of d-multiplets including all symmetries
@@ -1023,14 +1043,14 @@ def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole
             o1 = double_part[i][1]
             s2 = double_part[i][5]
             o2 = double_part[i][6]
-            o3 = hole34_part[i][1]            
-            o4 = hole34_part[i][6]             
+            o3 = hole3_part[i][1]            
+            o4 = hole4_part[i][1]             
             z1 = double_part[i][4]
             z2 = double_part[i][9]
-            z3 = hole34_part[i][4]
-            z4 = hole34_part[i][9]                        
+            z3 = hole3_part[i][4]
+            z4 = hole4_part[i][4]                        
             dpos = double_part[i][2:5]
-            dpos2 = hole34_part[i][2:5]            
+            dpos2 = hole3_part[i][2:5]            
             hole1_part = double_part[i][0:5]
             hole2_part = double_part[i][5:10]       
             
@@ -1038,12 +1058,12 @@ def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole
             y1=double_part[i][3]            
             x2=double_part[i][7]
             y2=double_part[i][8] 
-            x3 = hole34_part[i][2]            
-            y3 = hole34_part[i][3]            
-            x4 = hole34_part[i][7]            
-            y4 = hole34_part[i][8]
-            s3 = hole34_part[i][1]            
-            s4 = hole34_part[i][6]   
+            x3 = hole3_part[i][2]            
+            y3 = hole3_part[i][3]            
+            x4 = hole4_part[i][2]            
+            y4 = hole4_part[i][3]
+            s3 = hole3_part[i][1]            
+            s4 = hole4_part[i][1]   
             
             o12 = sorted([o1,o2])
             o12 = tuple(o12)
@@ -1088,17 +1108,17 @@ def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole
                 for s1 in ('up','dn'):
                     for s2 in ('up','dn'):
                         if idx[i]==34:
-                            slabel = [s1,o34[0]]+dpos + [s2,o34[1]]+dpos + hole34_part[i][0:5] + hole34_part[i][5:10] 
+                            slabel = [s1,o34[0]]+dpos + [s2,o34[1]]+dpos + hole3_part[i] + hole4_part[i]
                         if idx[i]==24:
-                            slabel = [s1,o34[0]]+dpos + hole34_part[i][0:5] + [s2,o34[1]]+dpos + hole34_part[i][5:10] 
+                            slabel = [s1,o34[0]]+dpos + hole3_part[i] + [s2,o34[1]]+dpos + hole4_part[i]
                         if idx[i]==14:
-                            slabel = hole34_part[i][0:5] + [s1,o34[0]]+dpos + [s2,o34[1]]+dpos + hole34_part[i][5:10] 
+                            slabel = hole3_part[i] + [s1,o34[0]]+dpos + [s2,o34[1]]+dpos + hole4_part[i]
                         if idx[i]==23:
-                            slabel = [s1,o34[0]]+dpos+ hole34_part[i][0:5] + hole34_part[i][5:10] + [s2,o34[1]]+dpos
+                            slabel = [s1,o34[0]]+dpos+ hole3_part[i] + hole4_part[i] + [s2,o34[1]]+dpos
                         if idx[i]==13:
-                            slabel = hole34_part[i][0:5] +[s1,o34[0]]+dpos + hole34_part[i][5:10] + [s2,o34[1]]+dpos 
+                            slabel =  hole3_part[i] +[s1,o34[0]]+dpos + hole4_part[i]+ [s2,o34[1]]+dpos 
                         if idx[i]==12:
-                            slabel = hole34_part[i][0:5] + hole34_part[i][5:10] + [s1,o34[0]]+dpos + [s2,o34[1]]+dpos
+                            slabel = hole3_part[i]+ hole4_part[i]   + [s1,o34[0]]+dpos + [s2,o34[1]]+dpos
 #                         print(slabel)
 
                         if not vs.check_Pauli(slabel):

@@ -14,7 +14,7 @@ edCu = {'d3z2r2': 0.0,\
 edNi = edCu
 
 epNis = np.arange(7.0, 7.01, 1.0)
-epCus = np.arange(3.0, 3.01, 1.0)
+epCus = np.arange(7.0, 7.01, 1.0)
 
 ANis = np.arange(6.0, 6.01, 1.0)
 ACus = np.arange(6.0, 6.01, 1.0)
@@ -58,9 +58,9 @@ elif Norb==9 or Norb==11:
 #     pps = 0.01
 #     ppp = 0.01
 
-tzs =np.arange(0, 0.1, 0.5)                                                                             #gai
+tzs =np.arange(0.001, 0.1, 0.5)                                       
     
-wmin = 0; wmax = 15
+wmin = -5; wmax = 15
 eta = 0.02
 Lanczos_maxiter = 600
 
@@ -71,13 +71,14 @@ if_H0_rotate_byU = 1
 basis_change_type = 'd_double' # 'all_states' or 'd_double'
 if_print_VS_after_basis_change = 0
 
-if_find_lowpeak = 0
-if if_find_lowpeak==1:
-    peak_mode = 'lowest_peak' # 'lowest_peak' or 'highest_peak' or 'lowest_peak_intensity'
-    if_write_lowpeak_ep_tpd = 1
-if_write_Aw = 0
-if_savefig_Aw = 0
-if_compute_Aw = 0
+if_compute_Aw = 1
+if if_compute_Aw==1:
+    if_find_lowpeak = 0
+    if if_find_lowpeak==1:
+        peak_mode = 'lowest_peak' # 'lowest_peak' or 'highest_peak' or 'lowest_peak_intensity'
+        if_write_lowpeak_ep_tpd = 1
+    if_write_Aw = 0
+    if_savefig_Aw = 1
 
 if_get_ground_state = 1
 if if_get_ground_state==1:
