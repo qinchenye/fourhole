@@ -58,8 +58,12 @@ def reorder_state(slabel):
     # default
     state_label = slabel
     phase = 1.0
+
+#     if x2==0 and y2==0:
+#         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1] 
+#         phase = -1.0
     
-    if (x2,y2)<(x1,y1):
+    if (x2,y2)<(x1,y1): #and (x2!=0 or y2!=0):
         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
         phase = -1.0
         

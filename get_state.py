@@ -76,14 +76,9 @@ def get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val):
         if S12==0 and Sz12==0 and o1=='d3z2r2' and o2=='dx2y2' and o3=='px' and o4=='px' and s1=='up' and s2=='up' and s3=='dn' and s4=='dn':
             d9Ld9L_a1L_b1L_state_indices.append(i); d9Ld9L_a1L_b1L_state_labels.append('$S=0,a1L-b1L$')
             print ("a1L_b1L_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)
+    
 
-        # d9_{b1a1} singlet:
-        if S12==0 and Sz12==0 and o1=='dx2y2' and o2=='d3z2r2' and o3=='px' and o4=='px'  and s1=='up' and s2=='up' and s3=='dn' and s4=='dn':
-            d9Ld9L_b1L_a1L_state_indices.append(i); d9Ld9L_b1L_a1L_state_labels.append('$S=0,a1L-b1L$')
-            print ("b1L_a1L_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)         
-
-    return d9Ld9L_a1L_b1L_state_indices, d9Ld9L_a1L_b1L_state_labels, \
-           d9Ld9L_b1L_a1L_state_indices, d9Ld9L_b1L_a1L_state_labels
+    return d9Ld9L_a1L_b1L_state_indices, d9Ld9L_a1L_b1L_state_labels
 
 def get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val):
     '''
@@ -143,15 +138,9 @@ def get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val):
         # d9_{a1b1} singlet:
         if S12==0 and Sz12==0 and o1=='d3z2r2' and o2=='dx2y2' and o3=='px' and o4=='px' and s1=='up' and s2=='up' and s3=='dn' and s4=='dn':
             d9d9L2_a1_b1L2_state_indices.append(i); d9d9L2_a1_b1L2_state_labels.append('$S=0,a1-b1L^{2}$')
-            print ("a1_b1L2_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)
+            print ("a1_b1L2_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)       
 
-        # d9_{b1a1} singlet:
-        if S12==0 and Sz12==0 and o1=='dx2y2' and o2=='d3z2r2' and o3=='px' and o4=='px'  and s1=='up' and s2=='up' and s3=='dn' and s4=='dn':
-            d9d9L2_b1_a1L2_state_indices.append(i); d9d9L2_b1_a1L2_state_labels.append('$S=0,a1-b1L^{2}$')
-            print ("b1_a1L2_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)         
-
-    return d9d9L2_a1_b1L2_state_indices, d9d9L2_a1_b1L2_state_labels, \
-           d9d9L2_b1_a1L2_state_indices, d9d9L2_b1_a1L2_state_labels
+    return d9d9L2_a1_b1L2_state_indices, d9d9L2_a1_b1L2_state_labels
 
 
 def get_d9L2d9_state_indices(VS,S_Ni_val, Sz_Ni_val):
@@ -214,13 +203,9 @@ def get_d9L2d9_state_indices(VS,S_Ni_val, Sz_Ni_val):
             d9L2d9_a1L2_b1_state_indices.append(i); d9L2d9_a1L2_b1_state_labels.append('$S=0,a1L^{2}-b1$')
             print ("a1L2_b1_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)
 
-        # d9_{b1a1} singlet:
-        if S12==0 and Sz12==0 and o1=='dx2y2' and o2=='d3z2r2' and o3=='px' and o4=='px'  and s1=='up' and s2=='up' and s3=='dn' and s4=='dn':
-            d9L2d9_b1L2_a1_state_indices.append(i); d9L2d9_b1L2_a1_state_labels.append('$S=0,a1L^{2}-b1$')
-            print ("b1L2_a1_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)         
+       
 
-    return d9L2d9_a1L2_b1_state_indices, d9L2d9_a1L2_b1_state_labels, \
-           d9L2d9_b1L2_a1_state_indices, d9L2d9_b1L2_a1_state_labels
+    return d9L2d9_a1L2_b1_state_indices, d9L2d9_a1L2_b1_state_labels
 
 
 def get_d8d9L_state_indices(VS,sym,d_double,S_val, Sz_val, AorB_sym, ANi):

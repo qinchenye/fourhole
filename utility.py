@@ -122,27 +122,17 @@ def get_orb_edep(orb,z,epCu,epNi):
     return diag_el
 
 def get_double_append(i,n,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,\
-                      p_list,idx,d_Ni_list,hole34_Ni_part, double_Ni_part,\
-                      d_Cu_list,hole34_Cu_part, double_Cu_part):
-    if (x1, y1, z1)==(x2, y2, z2):
-        if z1==z2==1:    
-            if o1 in pam.Ni_Cu_orbs and o2 in pam.Ni_Cu_orbs: #and not (o3 in pam.Ni_Cu_orbs and o4 in pam.Ni_Cu_orbs):
-                d_Ni_list.append(i)
-                idx.append(n); hole34_Ni_part.append([s3, o3, x3, y3, z3,s4, o4, x4, y4, z4])
-                double_Ni_part.append([s1,o1,x1,y1,z1,s2,o2,x2,y2,z2])
-            elif o1 in pam.O_orbs and o2 in pam.O_orbs:
-                p_list.append(i)
-                
-        if z1==z2==0:
-            if o1 in pam.Ni_Cu_orbs and o2 in pam.Ni_Cu_orbs: #and not (o3 in pam.Ni_Cu_orbs and o4 in pam.Ni_Cu_orbs):
-                d_Cu_list.append(i)
-                idx.append(n); hole34_Cu_part.append([s3, o3, x3, y3, z3,s4, o4, x4, y4, z4])
-                double_Cu_part.append([s1,o1,x1,y1,z1,s2,o2,x2,y2,z2])
-            elif o1 in pam.O_orbs and o2 in pam.O_orbs:
-                p_list.append(i)
+                      d_list,p_list,idx,hole34_part, double_part): 
+    if o1 in pam.Ni_Cu_orbs and o2 in pam.Ni_Cu_orbs: #and not (o3 in pam.Ni_Cu_orbs and o4 in pam.Ni_Cu_orbs):
+        d_list.append(i)
+        idx.append(n); hole34_part.append([s3, o3, x3, y3, z3,s4, o4, x4, y4, z4])
+        double_part.append([s1,o1,x1,y1,z1,s2,o2,x2,y2,z2])
+    elif o1 in pam.O_orbs and o2 in pam.O_orbs:
+        p_list.append(i)
 
-            
-    return p_list,idx,d_Ni_list,hole34_Ni_part,double_Ni_part,d_Cu_list,hole34_Cu_part, double_Cu_part
+
+
+     
 
 # def get_d_double_3hole(VS, i):
 #     '''
