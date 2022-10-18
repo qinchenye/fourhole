@@ -17,29 +17,29 @@ import lanczos
 
 def reorder_z(slabel):
     '''
-    reorder the s, orb, coord's labeling a state to prepare for generating its canonical state
-    Useful for three hole case especially !!!
+    The Ni orbital is the most preferred, followed by the Cu orbital, followed by the O orbital. 
+    O orbitals on Ni layer have priority over Cu layer
     '''
     s1 = slabel[0]; orb1 = slabel[1]; x1 = slabel[2]; y1 = slabel[3]; z1 = slabel[4];
     s2 = slabel[5]; orb2 = slabel[6]; x2 = slabel[7]; y2 = slabel[8]; z2 = slabel[9];
     
     
-    if orb1 in pam.Ni_Cu_orbs and orb2 in pam.Ni_Cu_orbs and z2>z1:
-        state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
-    elif orb1 in pam.Ni_Cu_orbs and orb2 in pam.Ni_Cu_orbs and z2==z1 and orb1=='dx2y2' and orb2=='d3z2r2':
-        state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
-    elif orb1 in pam.Ni_Cu_orbs and orb2 in pam.Ni_Cu_orbs and z2==z1 and (orb1!='dx2y2' or orb2!='d3z2r2'):
-        state_label = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]
-    elif orb1 in pam.Ni_Cu_orbs and orb2 in pam.Ni_Cu_orbs and z2<z1:
-        state_label = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]        
+    if orb1 in pam.Ni_Cu_orbs and orb2 in pam.Ni_Cu_orbs:
+        if z2>z1：
+            state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
+        elif z2==z1 and orb1=='dx2y2' and orb2=='d3z2r2':
+            state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
+        else:
+            state_label = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]
     elif orb1 in pam.Ni_Cu_orbs and orb2 in pam.O_orbs:
         state_label = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]
     elif orb1 in pam.O_orbs and orb2 in pam.Ni_Cu_orbs:
         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
-    elif orb1 in pam.O_orbs and orb2 in pam.O_orbs and z2>z1:
-        state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
-    elif orb1 in pam.O_orbs and orb2 in pam.O_orbs and (z2==z1 or z2<z1): 
-        state_label = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]
+    elif orb1 in pam.O_orbs and orb2 in pam.O_orbs:
+        if z2>z1：
+            state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
+        else: 
+            state_label = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]
             
     return state_label
                 
@@ -129,29 +129,33 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         print ('eigenvalue = ', vals[k])
         indices = np.nonzero(abs(vecs[:,k])>0.01)
 
-        wgt_LmLn = np.zeros(8)
-        wgt_d9Ld10L2 = np.zeros(8)
-        wgt_d9d10L3 = np.zeros(8)        
-        wgt_d9L2d10L= np.zeros(8)
-        wgt_d10Ld9L2= np.zeros(8)
-        wgt_d10d9L3= np.zeros(8)   
-        wgt_d10L2d9L= np.zeros(8)  
-        wgt_d8Ld10L= np.zeros(8)
-        wgt_d10Ld8L= np.zeros(8)        
-        wgt_d8d10L2= np.zeros(8)
-        wgt_d10d8L2 = np.zeros(8)
-        wgt_d8L2d10 = np.zeros(8)        
-        wgt_d10L2d8 = np.zeros(8) 
-        wgt_d9L2d9 = np.zeros(8)
-        wgt_d9d9L2 = np.zeros(8)    
-        wgt_d9Ld9L = np.zeros(8)         
-        wgt_d9d8L = np.zeros(8)     
-        wgt_d8d9L = np.zeros(8) 
-        wgt_d9Ld8 = np.zeros(8)  
-        wgt_d8Ld9 = np.zeros(8)
-        wgt_d8d8 = np.zeros(8) 
+        wgt_LmLn = np.zeros(10)
+        wgt_d9Ld10L2 = np.zeros(10)
+        wgt_d9d10L3 = np.zeros(10)        
+        wgt_d9L2d10L= np.zeros(10)
+        wgt_d10Ld9L2= np.zeros(10)
+        wgt_d10d9L3= np.zeros(10)   
+        wgt_d10L2d9L= np.zeros(10)  
+        wgt_d8Ld10L= np.zeros(10)
+        wgt_d10Ld8L= np.zeros(10)        
+        wgt_d8d10L2= np.zeros(10)
+        wgt_d10d8L2 = np.zeros(10)
+        wgt_d8L2d10 = np.zeros(10)        
+        wgt_d10L2d8 = np.zeros(10) 
+        wgt_d9L2d9 = np.zeros(10)
+        wgt_d9d9L2 = np.zeros(10)    
+        wgt_d9Ld9L = np.zeros(10)         
+        wgt_d9d8L = np.zeros(10)     
+        wgt_d8d9L = np.zeros(10) 
+        wgt_d9Ld8 = np.zeros(10)  
+        wgt_d8Ld9 = np.zeros(10)
+        wgt_d8d8 = np.zeros(10) 
+  
+        #Sumweight refers to the general weight.Sumweight1 refers to the weight in indices.Sumweight_picture refers to the weight that is calculated.Sumweight2 refers to the weight that differs by orbits
+
         sumweight=0
         sumweight1=0
+        synweight2=0
 
         print ("Compute the weights in GS (lowest Aw peak)")
         #for i in indices[0]:
@@ -211,7 +215,7 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
                 wgt_d9d10L3[1]+=abs(vecs[i,k])**2          
                     
             elif orb1=='dx2y2' and (orb2 in pam.O_orbs)  and  (orb3 in pam.O_orbs) \
-                      and (orb4 in pam.O_orbs) and z1==z2==z3==1 and z4==0 :
+                      and (orb4 in pam.O_orbs) and z1==z2==z3==1 and z4==0:
                 wgt_d9L2d10L[0]+=abs(vecs[i,k])**2   
             elif orb1=='d3z2r2' and (orb2 in pam.O_orbs)  and  (orb3 in pam.O_orbs)\
                       and (orb4 in pam.O_orbs) and z1==z2==z3==1 and z4==0:
@@ -457,6 +461,74 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
                 wgt_d8d8[4]+=abs(vecs[i,k])**2                  
             elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and z1==z2==1 and z3==z4==0  and SNi12==1:
                 wgt_d8d8[5]+=abs(vecs[i,k])**2 
+            elif orb1=='dx2y2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and z1==z2==1 and z3==z4==0  and SCu12==1:
+                wgt_d8d8[6]+=abs(vecs[i,k])**2  
+            elif orb1=='d3z2r2' and orb2=='d3z2r2' and orb3=='d3z2r2' and orb4=='d3z2r2' and z1==z2==1 and z3==z4==0  and SNi12==0:
+                wgt_d8d8[7]+=abs(vecs[i,k])**2  
+            elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and z1==z2==1 and z3==z4==0  and SNi12==1:
+                wgt_d8d8[8]+=abs(vecs[i,k])**2                  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.Ni_Cu_orbs) and (orb4 in pam.Ni_Cu_orbs):
+                wgt_d8d8[9]+=abs(vecs[i,k])**2 
+                
+                
+             
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.O_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==1 and z3==z4==0:
+                wgt_d9Ld10L2[8]+=abs(vecs[i,k])**2
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.O_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==1 and z2==z3==z4==0:
+                wgt_d9d10L3[8]+=abs(vecs[i,k])**2    
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.O_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==z3==1 and z4==0:
+                wgt_d9L2d10L[8]+=abs(vecs[i,k])**2
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.O_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z2==1 and z1==z3==z4==0:
+                wgt_d10Ld9L2[8]+=abs(vecs[i,k])**2      
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.O_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==z3==z4==0:
+                wgt_d10d9L3[8]+=abs(vecs[i,k])**2                     
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.O_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z2==z3==1 and z1==z4==0:
+                wgt_d10L2d9L[8]+=abs(vecs[i,k])**2  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==z3==1 and z4==0:
+                wgt_d8Ld10L[8]+=abs(vecs[i,k])**2                  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==1 and z3==z4==0:
+                wgt_d8d10L2[8]+=abs(vecs[i,k])**2  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z3==1 and z1==z2==z4==0:
+                wgt_d10Ld8L[8]+=abs(vecs[i,k])**2                  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==z3==z4==0:
+                wgt_d10d8L2[8]+=abs(vecs[i,k])**2                  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==z3==z4==1:
+                wgt_d8L2d10[8]+=abs(vecs[i,k])**2                   
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z3==z4==1 and z1==z2==0:
+                wgt_d10L2d8[8]+=abs(vecs[i,k])**2                    
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z3==z4==1 and z2==0:
+                wgt_d9L2d9[8]+=abs(vecs[i,k])**2                  
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==1 and z2==z3==z4==0:
+                wgt_d9d9L2[8]+=abs(vecs[i,k])**2                   
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z3==1 and z2==z4==0:
+                wgt_d9Ld9L[8]+=abs(vecs[i,k])**2                     
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.Ni_Cu_orbs) and (orb4 in pam.O_orbs) \
+                and z1==1 and z2==z3==z4==0:
+                wgt_d9d8L[8]+=abs(vecs[i,k])**2   
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.Ni_Cu_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==1 and z3==z4==0:
+                wgt_d8d9L[8]+=abs(vecs[i,k])**2                   
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.Ni_Cu_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z4==1 and z2==z3==0:
+                wgt_d9Ld8[8]+=abs(vecs[i,k])**2                   
+            if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.Ni_Cu_orbs) and (orb4 in pam.O_orbs) \
+                and z1==z2==z4==1 and z3==0:
+                wgt_d8Ld9[8]+=abs(vecs[i,k])**2                   
 
             sumweight=sumweight+abs(vecs[i,k])**2
         print ('sumweight=',sumweight)
@@ -483,7 +555,6 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         wgt_d8d9L[7]=wgt_d8d9L[0]+wgt_d8d9L[1]+wgt_d8d9L[2]+wgt_d8d9L[3]+wgt_d8d9L[4]+wgt_d8d9L[5] +wgt_d8d9L[6]  
         wgt_d9Ld8[7]=wgt_d9Ld8[0]+wgt_d9Ld8[1]+wgt_d9Ld8[2]+wgt_d9Ld8[3]+wgt_d9Ld8[4]+wgt_d9Ld8[5] +wgt_d9Ld8[6]     
         wgt_d8Ld9[7]=wgt_d8Ld9[0]+wgt_d8Ld9[1]+wgt_d8Ld9[2]+wgt_d8Ld9[3]+wgt_d8Ld9[4]+wgt_d8Ld9[5] +wgt_d8Ld9[6] 
-        wgt_d8d8[7]=wgt_d8d8[0]+wgt_d8d8[1]+wgt_d8d8[2]+wgt_d8d8[3]+wgt_d8d8[4]+wgt_d8d8[5]+wgt_d8d8[6]
         
         
         txt=open('LmLn','a')                                  
@@ -719,7 +790,13 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         txt.close()  
         txt=open('d9d8L','a')                                  
         txt.write(str(wgt_d9d8L[7])+'\n')
-        txt.close()          
+        txt.close()   
+        txt=open('d9d8L_singlet','a')                                  
+        txt.write(str(wgt_d9d8L[7]-wgt_d9d8L[3]-wgt_d9d8L[4])+'\n')
+        txt.close()    
+        txt=open('d9d8L_triplet','a')                                  
+        txt.write(str(wgt_d9d8L[3]+wgt_d9d8L[4])+'\n')
+        txt.close()            
         
         txt=open('d8d9L_d3z2r2_dx2y2_d3z2r2','a')                                  
         txt.write(str(wgt_d8d9L[0])+'\n')
@@ -744,7 +821,15 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         txt.close()  
         txt=open('d8d9L','a')                                  
         txt.write(str(wgt_d8d9L[7])+'\n')
-        txt.close()                 
+        txt.close()    
+        txt=open('d8d9L_singlet','a')                                  
+        txt.write(str(wgt_d8d9L[7]-wgt_d8d9L[1]-wgt_d8d9L[4])+'\n')
+        txt.close()            
+        txt=open('d8d9L_triplet','a')                                  
+        txt.write(str(wgt_d8d9L[1]+wgt_d8d9L[4])+'\n')
+        txt.close()    
+        
+        
         
         txt=open('d9Ld8_dx2y2_d3z2r2_d3z2r2','a')                                  
         txt.write(str(wgt_d9Ld8[0])+'\n')
@@ -770,6 +855,14 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         txt=open('d9Ld8','a')                                  
         txt.write(str(wgt_d9Ld8[7])+'\n')
         txt.close()         
+        txt=open('d9Ld8_singlet','a')                                  
+        txt.write(str(wgt_d9Ld8[7]-wgt_d9Ld8[3]-wgt_d9Ld8[4])+'\n')
+        txt.close()    
+        txt=open('d9Ld8_triplet','a')                                  
+        txt.write(str(wgt_d9Ld8[3]+wgt_d9Ld8[4])+'\n')
+        txt.close()         
+        
+        
         
         txt=open('d8Ld9_d3z2r2_dx2y2_d3z2r2','a')                                  
         txt.write(str(wgt_d8Ld9[0])+'\n')
@@ -795,15 +888,22 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         txt=open('d8Ld9','a')                                  
         txt.write(str(wgt_d8Ld9[7])+'\n')
         txt.close()    
+        txt=open('d8Ld9_singlet','a')                                  
+        txt.write(str(wgt_d8Ld9[7]-wgt_d8Ld9[1]-wgt_d8Ld9[4])+'\n')
+        txt.close()            
+        txt=open('d8Ld9_triplet','a')                                  
+        txt.write(str(wgt_d8Ld9[1]+wgt_d8Ld9[4])+'\n')
+        txt.close()            
+        
 
         
         txt=open('d8d8_dx2y2_dx2y2_d3z2r2_d3z2r2','a')                                  
         txt.write(str(wgt_d8d8[0])+'\n')
         txt.close()          
-        txt=open('d8d8_d3z2r2_d3z2r2_dx2y2_dx2y2','a')                                  
+        txt=open('d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2','a')                                  
         txt.write(str(wgt_d8d8[1])+'\n')
         txt.close()              
-        txt=open('d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+        txt=open('d8d8_d3z2r2_d3z2r2_dx2y2_dx2y2','a')                                  
         txt.write(str(wgt_d8d8[2])+'\n')
         txt.close()          
         txt=open('d8d8_dx2y2_dx2y2_dx2y2_dx2y2','a')                                  
@@ -812,16 +912,36 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         txt=open('d8d8_d3z2r2_dx2y2_dx2y2_dx2y2_S1','a')                                  
         txt.write(str(wgt_d8d8[4])+'\n')
         txt.close()        
-        txt=open('d8d8','a')                                  
+        txt=open('d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
         txt.write(str(wgt_d8d8[5])+'\n')
         txt.close()    
-        
-      
+        txt=open('d8d8_dx2y2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+        txt.write(str(wgt_d8d8[6])+'\n')
+        txt.close()  
+        txt=open('d8d8_d3z2r2_d3z2r2_d3z2r2_d3z2r2','a')                                  
+        txt.write(str(wgt_d8d8[7])+'\n')
+        txt.close() 
+        txt=open('d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+        txt.write(str(wgt_d8d8[8])+'\n')
+        txt.close()      
+        txt=open('d8d8','a')                                  
+        txt.write(str(wgt_d8d8[9])+'\n')
+        txt.close()     
+        txt=open('d8d8_singlet','a')                                  
+        txt.write(str(wgt_d8d8[9]-wgt_d8d8[4]-wgt_d8d8[5]-wgt_d8d8[6]-wgt_d8d8[8])+'\n')
+        txt.close()            
+        txt=open('d8d8_triplet','a')                                  
+        txt.write(str(wgt_d8d8[4]+wgt_d8d8[5]+wgt_d8d8[6]+wgt_d8d8[8])+'\n')
+        txt.close()         
         
         sumweight_picture=wgt_LmLn[0]+wgt_d9Ld10L2[2]+wgt_d9d10L3[2]+wgt_d9L2d10L[2]+wgt_d10Ld9L2[2]+wgt_d10d9L3[2]+wgt_d10L2d9L[2]\
                           +wgt_d8Ld10L[4]+wgt_d10Ld8L[4]+wgt_d8d10L2[4]+wgt_d10d8L2[4]+wgt_d8L2d10[4]+ wgt_d10L2d8[4]\
-                          +wgt_d9L2d9[4]+wgt_d9d9L2[4]+wgt_d9Ld9L[4]+wgt_d9d8L[7]+wgt_d8d9L[7]+wgt_d9Ld8[7]+wgt_d8Ld9[7]+ wgt_d8d8[7]       
+                          +wgt_d9L2d9[4]+wgt_d9d9L2[4]+wgt_d9Ld9L[4]+wgt_d9d8L[7]+wgt_d8d9L[7]+wgt_d9Ld8[7]+wgt_d8Ld9[7]+ wgt_d8d8[9] 
+        sumweight2=wgt_LmLn[0]+wgt_d9Ld10L2[8]+wgt_d9d10L3[8]+wgt_d9L2d10L[8]+wgt_d10Ld9L2[8]+wgt_d10d9L3[8]+wgt_d10L2d9L[8]\
+                          +wgt_d8Ld10L[8]+wgt_d10Ld8L[8]+wgt_d8d10L2[8]+wgt_d10d8L2[8]+wgt_d8L2d10[8]+ wgt_d10L2d8[8]\
+                          +wgt_d9L2d9[8]+wgt_d9d9L2[8]+wgt_d9Ld9L[8]+wgt_d9d8L[8]+wgt_d8d9L[8]+wgt_d9Ld8[8]+wgt_d8Ld9[8]+ wgt_d8d8[9] 
         
+        print ('sumweight2=',sumweight2)        
         print ('sumweight_picture=',sumweight_picture)
         print ('LmLn=',wgt_LmLn[0])
         print ('d9Ld10L2=',wgt_d9Ld10L2[2])
@@ -843,7 +963,7 @@ def get_ground_state(matrix, VS, S_Ni_val,Sz_Ni_val,S_Cu_val,Sz_Cu_val,tz):
         print ('d8d9L=',wgt_d8d9L[7])
         print ('d9Ld8=',wgt_d9Ld8[7])  
         print ('d8Ld9=',wgt_d8Ld9[7])        
-        print ('d8d8=',wgt_d8d8[7])
+        print ('d8d8=',wgt_d8d8[9])
 
         print ('LmLn=',wgt_LmLn)
         print ('d9Ld10L2=',wgt_d9Ld10L2)

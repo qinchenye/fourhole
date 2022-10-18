@@ -19,11 +19,8 @@ import ground_state as gs
 ############################################################################
 def get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val):
     '''
-    Get d8L state index
-    one hole must be dz2 corresponding to s electron
-    
-    Choose interesing states to plot spectra
-    see George's email on Aug.21, 2021
+    Get d9Ld9L state index
+    o1=='d3z2r2' and o2=='dx2y2'
     '''    
     Norb = pam.Norb
     dim = VS.dim
@@ -58,7 +55,7 @@ def get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val):
                 and z1==z3==1 and z2==z4==0):
             continue 
             
-        if not (((x3==1 or x3==-1) or (x3==1 or x3==-1)) and ((x4==1 or x4==-1) or (x4==1 or x4==-1))):
+        if not (((x3==1 or x3==-1) or (y3==1 or y3==-1)) and ((x4==1 or x4==-1) or (y4==1 or y4==-1))):
             continue        
             
         orbs = [o1,o2,o3]
@@ -82,12 +79,9 @@ def get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val):
 
 def get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val):
     '''
-    Get d8L state index
-    one hole must be dz2 corresponding to s electron
-    
-    Choose interesing states to plot spectra
-    see George's email on Aug.21, 2021
-    '''    
+    Get d9d9L2 state index
+    o1=='d3z2r2' and o2=='dx2y2'
+    '''      
     Norb = pam.Norb
     dim = VS.dim
     d9d9L2_a1_b1L2_state_indices = []; d9d9L2_a1_b1L2_state_labels = []
@@ -121,7 +115,7 @@ def get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val):
                 and z1==1 and z2==z3==z4==0):
             continue    
             
-        if not (((x3==1 or x3==-1) or (x3==1 or x3==-1)) and ((x4==1 or x4==-1) or (x4==1 or x4==-1))):
+        if not (((x3==1 or x3==-1) or (y3==1 or y3==-1)) and ((x4==1 or x4==-1) or (y4==1 or y4==-1))):
             continue              
             
         orbs = [o1,o2,o3]
@@ -145,12 +139,9 @@ def get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val):
 
 def get_d9L2d9_state_indices(VS,S_Ni_val, Sz_Ni_val):
     '''
-    Get d8L state index
-    one hole must be dz2 corresponding to s electron
-    
-    Choose interesing states to plot spectra
-    see George's email on Aug.21, 2021
-    '''    
+    Get d9L2d9 state index
+    o1=='d3z2r2' and o2=='dx2y2'
+    '''      
     Norb = pam.Norb
     dim = VS.dim
     d9L2d9_a1L2_b1_state_indices = []; d9L2d9_a1L2_b1_state_labels = []
@@ -184,7 +175,7 @@ def get_d9L2d9_state_indices(VS,S_Ni_val, Sz_Ni_val):
                 and z1==z3==z4==1 and z2==0):
             continue    
 
-        if not (((x3==1 or x3==-1) or (x3==1 or x3==-1)) and ((x4==1 or x4==-1) or (x4==1 or x4==-1))):
+        if not (((x3==1 or x3==-1) or (y3==1 or y3==-1)) and ((x4==1 or x4==-1) or (y4==1 or y4==-1))):
             continue   
             
         orbs = [o1,o2,o3]
@@ -376,21 +367,21 @@ def get_d8Ld9_state_indices(VS,sym,d_double,S_val, Sz_val, AorB_sym, ANi):
     return d8Ld9_state_indices
 
 
-def get_d8d8_state_indices(VS,sym,d_Ni_double,S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi):
+def get_d8d8_state_indices(VS,sym_Ni,sym_Cu,d_Ni_double,S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi,S_Cu_val, Sz_Cu_val, AorB_Cu_sym, ACu):
     '''
-    Get d8L state index
-    one hole must be dz2 corresponding to s electron
-    
-    Choose interesing states to plot spectra
-    see George's email on Aug.21, 2021
+    Get d8d8 state index
+    Distinguish Ni/Cu and separate all parameters
     '''    
     Norb = pam.Norb
     dim = VS.dim
     d8d8_state_indices= []; d8d8_state_labels= []
  
     # get info specific for particular sym
-    state_order, interaction_mat, Stot, Sz_set, AorB = ham.get_interaction_mat(ANi, sym)
-    sym_orbs = state_order.keys()
+    state_order_Ni, interaction_mat_Ni, Stot_Ni, Sz_set_Ni, AorB_Ni = ham.get_interaction_mat(ANi, sym_Ni)
+    sym_orbs_Ni = state_order_Ni.keys()
+    state_order_Cu, interaction_mat_Cu, Stot_Cu, Sz_set_Cu, AorB_Cu = ham.get_interaction_mat(ACu, sym_Cu)
+    sym_orbs_Cu = state_order_Cu.keys()
+    
     
     for i in d_Ni_double:
         # state is original state but its orbital info remains after basis change
@@ -416,36 +407,40 @@ def get_d8d8_state_indices(VS,sym,d_Ni_double,S_Ni_val, Sz_Ni_val, AorB_Ni_sym, 
         s4 = slabel[15]; o4 = slabel[16]; x4 = slabel[17]; y4 = slabel[18]; z4 = slabel[19];            
                
         # S_val, Sz_val obtained from basis.create_singlet_triplet_basis_change_matrix
-        S12  = S_Ni_val[i]
-        Sz12 = Sz_Ni_val[i]
-            
+        S12_Ni  = S_Ni_val[i]
+        Sz12_Ni = Sz_Ni_val[i]
+        S12_Cu  = S_Cu_val[i]
+        Sz12_Cu = Sz_Cu_val[i]            
             
         if not ((o1 in pam.Ni_Cu_orbs) and (o2 in pam.Ni_Cu_orbs) and (o3 in pam.Ni_Cu_orbs) and (o4 in pam.Ni_Cu_orbs) \
                 and z1==z2==1 and z3==z4==0):
             continue    
             
         o12 = sorted([o1,o2])
-        o12 = tuple(o12)    
+        o12 = tuple(o12)  
+        o34 = sorted([o3,o4])
+        o34 = tuple(o34)         
                      
         orbs = [o1,o2,o3]
         xs = [x1,x2,x3]
         ys = [y1,y2,y3]
         zs = [z1,z2,z3]
             
-        # S_val, Sz_val obtained from basis.create_singlet_triplet_basis_change_matrix
-        S12  = S_Ni_val[i]
-        Sz12 = Sz_Ni_val[i]
+
 
         # for triplet, only need one Sz state; other Sz states have the same A(w)
        # if Sz12==0 and 'd3z2r2' in dorbs and se=='up':
     
-        if o12 not in sym_orbs or S12!=Stot or Sz12 not in Sz_set:
+        if o12 not in sym_orbs_Ni or S12_Ni!=Stot_Ni or Sz12_Ni not in Sz_set_Ni:
             continue
+        if o34 not in sym_orbs_Cu or S12_Cu!=Stot_Cu or Sz12_Cu not in Sz_set_Cu:
+            continue            
+            
             
         if 'dx2y2' not in o12:
             continue
-        if  o3!="dx2y2" and o4!="dx2y2":
-            continue     
+        if 'dx2y2' not in o34:
+            continue    
             
 #         if o1==o2=='dxz' or o1==o2=='dyz':
 #             if AorB_sym[i]!=AorB:

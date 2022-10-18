@@ -416,6 +416,7 @@ def compute_Aw_d8Ld9_sym(H, VS, d_double, S_val, Sz_val, AorB_sym, ANi, w_vals, 
         Aw_dd_total += Aw_dd
 
         subplot(Nsym,1,i+1)
+
         plt.plot(w_vals, Aw_dd, Ms[i], linewidth=1, label=sym)
         #plt.plot(w_vals, Aw_dGS, Ms[i], linewidth=1, label=sym)
 
@@ -440,61 +441,67 @@ def compute_Aw_d8Ld9_sym(H, VS, d_double, S_val, Sz_val, AorB_sym, ANi, w_vals, 
     if Nsym>0 and pam.if_savefig_Aw==1:    
         savefig("Aw_d8Ld9_"+fname+"_sym.pdf")
         
-def compute_Aw_d8d8_sym(H, VS, d_Ni_double, S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi, w_vals, fig_name, fname):
+def compute_Aw_d8d8_sym(H, VS, d_Ni_double, S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi, S_Cu_val, Sz_Cu_val, AorB_Cu_sym, ACu, w_vals, fig_name, fname):
     '''
-    Compute A(w) for d8 states
+    Compute A(w) for d8d8 states
+    To calculate Cu/Ni aw,perform two cycles to differ Cu/Ni.
     '''
     Aw_dd_total = np.zeros(len(w_vals))
     symmetries = pam.symmetries    
     Nsym = len(symmetries)
     for i in range(0,Nsym):
-        sym = symmetries[i]
-        print ("====================================")
-        print ("start computing A_dd(w) for sym", sym)
+        for j in range(0,Nsym):
+            sym_Ni= symmetries[i]
+            sym_Cu= symmetries[j]            
+            print ("====================================")
+            print ("start computing A_dd(w) for sym", sym_Ni,sym_Cu)
 
-        d8d8_state_indices = getstate.get_d8d8_state_indices(VS,sym,d_Ni_double,S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi)
+            d8d8_state_indices = getstate.get_d8d8_state_indices(VS,sym_Ni,sym_Cu,d_Ni_double,S_Ni_val, Sz_Ni_val, AorB_Cu_sym, ANi,S_Cu_val, Sz_Cu_val, AorB_Cu_sym, ACu)
 
-        Aw_dd = np.zeros(len(w_vals))
-        for index in d8d8_state_indices:      
-            Aw, w_peak, weight = getAw(H,index,VS,w_vals)
-            Aw_dd += Aw  #*coef_frac_parentage[spinorb]
-            #Aw_dGS += wgh_d*Aw
+            Aw_dd = np.zeros(len(w_vals))
+            for index in d8d8_state_indices:      
+                Aw, w_peak, weight = getAw(H,index,VS,w_vals)
+                Aw_dd += Aw  #*coef_frac_parentage[spinorb]
+                #Aw_dGS += wgh_d*Aw
 
-            # write lowest peak data into file
-            if pam.if_find_lowpeak==1 and pam.if_write_lowpeak_ep_tpd==1:
-                if Norb==7:
-                    write_lowpeak(flowpeak+'_'+sym+'.txt',A,ep,tpd,w_peak, weight)
-                elif Norb==9:
-                    write_lowpeak2(flowpeak+'_'+sym+'.txt',A,ep,pds,pdp,w_peak, weight)
+                # write lowest peak data into file
+                if pam.if_find_lowpeak==1 and pam.if_write_lowpeak_ep_tpd==1:
+                    if Norb==7:
+                        write_lowpeak(flowpeak+'_'+sym_Cu+'.txt',A,ep,tpd,w_peak, weight)
+                    elif Norb==9:
+                        write_lowpeak2(flowpeak+'_'+sym+'.txt',A,ep,pds,pdp,w_peak, weight)
 
-        # write data into file for reusage
-        if pam.if_write_Aw==1:
-            write_Aw(fname+'_'+sym+'.txt', Aw_dd, vals[0]-w_vals)
+            # write data into file for reusage
+            if pam.if_write_Aw==1:
+                write_Aw(fname+'_'+sym_Cu+'.txt', Aw_dd, vals[0]-w_vals)
 
-        # accumulate Aw for each sym into total Aw_dd
-        Aw_dd_total += Aw_dd
+            # accumulate Aw for each sym into total Aw_dd
+            Aw_dd_total += Aw_dd
 
-        subplot(Nsym,1,i+1)
-        plt.plot(w_vals, Aw_dd, Ms[i], linewidth=1, label=sym)
-        #plt.plot(w_vals, Aw_dGS, Ms[i], linewidth=1, label=sym)
+            # Use i, j number, multiply by twice to ensure no repetition           
+            
+            subplot(4*Nsym,1,i+j*2+1)
+            print(w_vals,Aw_dd)
+            plt.plot(w_vals, Aw_dd, Ms[j], linewidth=1, label=sym_Ni+','+sym_Cu)
+            #plt.plot(w_vals, Aw_dGS, Ms[i], linewidth=1, label=sym)
 
-        # plot atomic multiplet peaks
-        #plot_atomic_multiplet_peaks(Aw_dd)
+            # plot atomic multiplet peaks
+            #plot_atomic_multiplet_peaks(Aw_dd)
 
-        if i==0:
-            title(fname, fontsize=8)
-        if i==Nsym-1:
-            xlabel('$\omega$',fontsize=15)
+            if i==0 and j==0:
+                title(fname, fontsize=8)
+            if i==Nsym-1 and j==Nsym-1:
+                xlabel('$\omega$',fontsize=15)
 
-        maxval = max(Aw_dd)
-        #xlim([-5,20])
-        ylim([0,maxval])
-#         ylim([0,0.1])
-        #ylabel('$A(\omega)$',fontsize=17)
-        #text(0.45, 0.1, '(a)', fontsize=16)
-        #grid('on',linestyle="--", linewidth=0.5, color='black', alpha=0.5)
-        legend(loc='best', fontsize=9.5, framealpha=1.0, edgecolor='black')
-        #yticks(fontsize=12) 
+            maxval = max(Aw_dd)
+            xlim([0,25])
+            ylim([0,maxval])
+    #         ylim([0,0.1])
+            #ylabel('$A(\omega)$',fontsize=17)
+            #text(0.45, 0.1, '(a)', fontsize=16)
+            #grid('on',linestyle="--", linewidth=0.5, color='black', alpha=0.5)
+            legend(loc='upper left', fontsize=8, framealpha=1.0, edgecolor='black')
+            #yticks(fontsize=12) 
 
     if Nsym>0 and pam.if_savefig_Aw==1:    
         savefig("Aw_d8d8_"+fname+"_sym.pdf")        

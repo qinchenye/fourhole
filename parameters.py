@@ -14,7 +14,7 @@ edCu = {'d3z2r2': 0.0,\
 edNi = edCu
 
 epNis = np.arange(7.0, 7.01, 1.0)
-epCus = np.arange(3.0, 3.01, 1.0)
+epCus = np.arange(7.0, 7.01, 1.0)
 
 ANis = np.arange(6.0, 6.01, 1.0)
 ACus = np.arange(6.0, 6.01, 1.0)
@@ -37,7 +37,7 @@ Norb = 7
 if Norb==7:
     #tpds = [0.00001]  # for check_CuO4_eigenvalues.py
     tpds = np.linspace(1.3, 1.3, num=1, endpoint=True) #[0.25]
-    tpds = [0.01]
+#    tpds = [0.01]
     tpps = [0.55]
 elif Norb==9 or Norb==11:    
     # pdp = sqrt(3)/4*pds so that tpd(b2)=tpd(b1)/2: see Eskes's thesis and 1990 paper
@@ -58,9 +58,9 @@ elif Norb==9 or Norb==11:
 #     pps = 0.01
 #     ppp = 0.01
 
-tzs =np.arange(0.0, 0.1, 0.5)                                       
+tzs =np.arange(0.001, 1.51, 0.1)                                       
     
-wmin = -5; wmax = 20
+wmin = 0; wmax = 30
 eta = 0.02
 Lanczos_maxiter = 600
 
@@ -71,7 +71,7 @@ if_H0_rotate_byU = 1
 basis_change_type = 'd_double' # 'all_states' or 'd_double'
 if_print_VS_after_basis_change = 0
 
-if_compute_Aw = 1
+if_compute_Aw = 0
 if if_compute_Aw==1:
     if_find_lowpeak = 0
     if if_find_lowpeak==1:
@@ -80,7 +80,7 @@ if if_compute_Aw==1:
     if_write_Aw = 0
     if_savefig_Aw = 1
 
-if_get_ground_state = 0
+if_get_ground_state = 1
 if if_get_ground_state==1:
     # see issue https://github.com/scipy/scipy/issues/5612
     Neval = 10
@@ -110,6 +110,6 @@ orbs = Ni_Cu_orbs + O_orbs
 #assert(len(orbs)==Norb)
 
 Upps = [0]
-symmetries = ['1A1','1B1','3B1','1A2','3A2','1E','3E']
+symmetries = ['1A1','3B1']#,'3B1','1A2','3A2','1E','3E']
 print ("compute A(w) for symmetries = ",symmetries)
 

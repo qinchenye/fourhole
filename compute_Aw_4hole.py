@@ -27,7 +27,7 @@ M_PI = math.pi
 #####################################
 def compute_Aw_main(ANi,ACu,epCu,epNi,tpd,tpp,tz,pds,pdp,pps,ppp,Upp,\
                     d_Ni_double,d_Cu_double,p_double,double_Ni_part,hole34_Ni_part, double_Cu_part,\
-                    hole34_Cu_part, idx,U_Ni, S_Ni_val, Sz_Ni_val, AorB_Ni_sym ,U_Cu, S_Cu_val, Sz_Cu_val, AorB_Cu_sym):  
+                    hole34_Cu_part, idx_Ni,idx_Cu,U_Ni, S_Ni_val, Sz_Ni_val, AorB_Ni_sym ,U_Cu, S_Cu_val, Sz_Cu_val, AorB_Cu_sym):  
     if Norb==7:
         fname = 'epCu'+str(epCu)+'epNi'+str(epNi)+'_tpd'+str(tpd)+'_tpp'+str(tpp) \
                   +'_Mc'+str(Mc)+'_Norb'+str(Norb)+'_eta'+str(eta) +'_ANi'+str(ANi) \
@@ -72,13 +72,13 @@ def compute_Aw_main(ANi,ACu,epCu,epNi,tpd,tpp,tz,pds,pdp,pps,ppp,Upp,\
     clf()
 
     if Norb==7 or Norb==9 or Norb==10 or Norb==11:     
-        Hint_Ni = ham.create_interaction_matrix_ALL_syms(VS,d_Ni_double,p_double,double_Ni_part, idx, hole34_Ni_part, \
+        Hint_Ni = ham.create_interaction_matrix_ALL_syms(VS,d_Ni_double,p_double,double_Ni_part, idx_Ni, hole34_Ni_part,  \
                                                       S_Ni_val, Sz_Ni_val,AorB_Ni_sym, ACu, ANi, Upp)
-        Hint_Cu = ham.create_interaction_matrix_ALL_syms(VS,d_Cu_double,p_double,double_Cu_part, idx, hole34_Cu_part, \
+        Hint_Cu = ham.create_interaction_matrix_ALL_syms(VS,d_Cu_double,p_double,double_Cu_part, idx_Cu, hole34_Cu_part, \
                                                       S_Cu_val, Sz_Cu_val,AorB_Cu_sym, ACu, ANi, Upp)        
         
         if pam.if_H0_rotate_byU==1:
-# H = H0_Ni_new +H0_Cu_new + Hint_Ni + Hint_Cu
+           # H = H0_Ni_new +H0_Cu_new + Hint_Ni + Hint_Cu
             H_Ni = H0_Ni_new + Hint_Ni
             H0_Cu_new = U_Cu_d.dot(H_Ni.dot(U_Cu)) 
             H = H0_Cu_new + Hint_Cu
@@ -104,31 +104,21 @@ def compute_Aw_main(ANi,ACu,epCu,epNi,tpd,tpp,tz,pds,pdp,pps,ppp,Upp,\
 
             #compute d9Ld9L
             d9Ld9L_a1L_b1L_state_indices, d9Ld9L_a1L_b1L_state_labels, \
-            d9Ld9L_b1L_a1L_state_indices, d9Ld9L_b1L_a1L_state_labels, \
                     = getstate.get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val)
-            fig.compute_Aw1(H, VS, w_vals,  d9Ld9L_a1L_b1L_state_indices, d9Ld9L_a1L_b1L_state_labels, "Aw_d9Ld9L_a1L_b1L__", fname)
-            fig.compute_Aw1(H, VS, w_vals,  d9Ld9L_b1L_a1L_state_indices, d9Ld9L_b1L_a1L_state_labels, "Aw_d9Ld9L_b1L_a1L_", fname)
+            fig.compute_Aw1(H, VS, w_vals,d9Ld9L_a1L_b1L_state_indices, d9Ld9L_a1L_b1L_state_labels, "Aw_d9Ld9L_a1L_b1L__", fname)
            
         
-            #compute d9d9L2        
-            d9d9L2_a1_b1L2_state_indices, d9d9L2_a1_b1L2_state_labels, \
-            d9d9L2_b1_a1L2_state_indices, d9d9L2_b1_a1L2_state_labels, \
-                    = getstate.get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val)
-            fig.compute_Aw1(H, VS, w_vals,  d9d9L2_a1_b1L2_state_indices, d9d9L2_a1_b1L2_state_labels, "Aw_d9d9L2_a1_b1L2__", fname)
-            fig.compute_Aw1(H, VS, w_vals,  d9d9L2_b1_a1L2_state_indices, d9d9L2_b1_a1L2_state_labels, "Aw_d9d9L2_b1_a1L2_", fname)
-         
-            #compute d9L2d9        
-            d9L2d9_a1L2_b1_state_indices, d9L2d9_a1L2_b1_state_labels, \
-            d9L2d9_b1L2_a1_state_indices, d9L2d9_b1L2_a1_state_labels, \
-                    = getstate.get_d9L2d9_state_indices(VS,S_Ni_val, Sz_Ni_val)
-            fig.compute_Aw1(H, VS, w_vals,  d9L2d9_a1L2_b1_state_indices, d9L2d9_a1L2_b1_state_labels, "Aw_d9L2d9_a1L2_b1__", fname)
-            fig.compute_Aw1(H, VS, w_vals,  d9L2d9_b1L2_a1_state_indices, d9L2d9_b1L2_a1_state_labels, "Aw_d9L2d9_b1L2_a1_", fname)
-         
-            
-
-
-     
-            fig.compute_Aw_d8d8_sym(H, VS, d_Ni_double, S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi, w_vals, "Aw_d8d8_sym_", fname)    
+#             #compute d9d9L2        
+#             d9d9L2_a1_b1L2_state_indices, d9d9L2_a1_b1L2_state_labels, \
+#                     = getstate.get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val)
+#             fig.compute_Aw1(H, VS, w_vals,  d9d9L2_a1_b1L2_state_indices, d9d9L2_a1_b1L2_state_labels, "Aw_d9d9L2_a1_b1L2__", fname)
+#             #compute d9L2d9        
+#             d9L2d9_a1L2_b1_state_indices, d9L2d9_a1L2_b1_state_labels, \
+#                     = getstate.get_d9L2d9_state_indices(VS,S_Ni_val, Sz_Ni_val)
+#             fig.compute_Aw1(H, VS, w_vals,  d9L2d9_a1L2_b1_state_indices, d9L2d9_a1L2_b1_state_labels, "Aw_d9L2d9_a1L2_b1__", fname)
+                    
+#             fig.compute_Aw_d8d8_sym(H, VS, d_Ni_double, S_Ni_val, Sz_Ni_val, AorB_Ni_sym, ANi, S_Cu_val, \
+#                                     Sz_Cu_val,AorB_Cu_sym, ACu, w_vals, "Aw_d8d8_sym_", fname)    
 #             fig.compute_Aw_d8Ld9_sym(H, VS, d_double, S_val, Sz_val, AorB_sym, ANi, w_vals, "Aw_d8Ld9_sym_", fname)
 #             fig.compute_Aw_d8d9L_sym(H, VS, d_double, S_val, Sz_val, AorB_sym, ANi, w_vals, "Aw_d8d9L_sym_", fname)        
 ##########################################################################
@@ -138,8 +128,8 @@ if __name__ == '__main__':
 
     Norb = pam.Norb
     eta  = pam.eta
-    edNi   = pam.edNi
-    edCu   = pam.edCu
+    edNi = pam.edNi
+    edCu = pam.edCu
 
     ANis = pam.ANis
     ACus = pam.ACus
@@ -150,20 +140,21 @@ if __name__ == '__main__':
     VS = vs.VariationalSpace(Mc)
 #     basis.count_VS(VS)
     
-    d_Ni_double,d_Cu_double, p_double, double_Ni_part,hole34_Ni_part  ,double_Cu_part,\
-                                                                hole34_Cu_part  ,idx = ham.get_double_occu_list(VS)
+    d_Ni_double, idx_Ni, hole34_Ni_part,  double_Ni_part, \
+    d_Cu_double, idx_Cu, hole34_Cu_part,  double_Cu_part, \
+    p_double = ham.get_double_occu_list(VS)
     
     # change the basis for d_double states to be singlet/triplet
     if pam.basis_change_type=='all_states':
         U, S_val, Sz_val, AorB_sym = basis.create_singlet_triplet_basis_change_matrix \
-                                    (VS, d_double, double_part, idx, hole3_part, hole4_part)
+                                    (VS, d_double, double_part, idx, hole34_part)
         if pam.if_print_VS_after_basis_change==1:
             basis.print_VS_after_basis_change(VS,S_val,Sz_val)
     elif pam.basis_change_type=='d_double':
         U_Ni, S_Ni_val, Sz_Ni_val, AorB_Ni_sym = basis.create_singlet_triplet_basis_change_matrix_d_double \
-                                    (VS, d_Ni_double, double_Ni_part, idx, hole34_Ni_part)
+                                    (VS, d_Ni_double, double_Ni_part, idx_Ni, hole34_Ni_part)
         U_Cu, S_Cu_val, Sz_Cu_val, AorB_Cu_sym = basis.create_singlet_triplet_basis_change_matrix_d_double \
-                                    (VS, d_Cu_double, double_Cu_part, idx, hole34_Cu_part)
+                                    (VS, d_Cu_double, double_Cu_part, idx_Cu, hole34_Cu_part)
 #         U = U_Ni+U_Cu
 #         print(U_Ni)
 #         print(U_Cu)    
@@ -189,7 +180,7 @@ if __name__ == '__main__':
 
                                         compute_Aw_main(ANi,ACu,epCu,epNi,tpd,tpp,tz,0,0,0,0,Upp,\
                                                         d_Ni_double,d_Cu_double,p_double,double_Ni_part,hole34_Ni_part,\
-                                                        double_Cu_part,hole34_Cu_part, idx,\
+                                                        double_Cu_part,hole34_Cu_part, idx_Ni,idx_Cu, \
                                                         U_Ni, S_Ni_val, Sz_Ni_val, AorB_Ni_sym ,U_Cu, S_Cu_val, Sz_Cu_val, AorB_Cu_sym)  
     elif Norb==9 or Norb==10 or Norb==11:
         pps = pam.pps
@@ -209,8 +200,8 @@ if __name__ == '__main__':
                                     print ('ANi=',ANi, 'ACu=',ACu,'epCu=',epCu, 'epNi=',epNi,' pds=',pds,\
                                            ' pdp=',pdp,' pps=',pps,' ppp=',ppp,' Upp=',Upp,'tz=',tz)
                                     compute_Aw_main(ANi,ACu,epCu,epNi,0,0,tz,pds,pdp,pps,ppp,Upp,\
-                                                   d_Ni_double,d_Cu_double,p_double,double_Ni_part,hole34_Ni_part, \
-                                                   double_Cu_part,hole34_Cu_part, idx,\
+                                                   d_Ni_double,d_Cu_double,p_double,double_Ni_part,hole34_Ni_part,\
+                                                   double_Cu_part,hole34_Cu_part,idx_Ni,idx_Cu,\
                                                    U_Ni, S_Ni_val, Sz_Ni_val, AorB_Ni_sym ,U_Cu, S_Cu_val, Sz_Cu_val, AorB_Cu_sym) 
 
                         
