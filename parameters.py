@@ -58,9 +58,9 @@ elif Norb==9 or Norb==11:
 #     pps = 0.01
 #     ppp = 0.01
 
-tzs =np.arange(0.001, 1.51, 0.1)                                       
+tzs =np.arange(5, 5.51, 10)                                       
     
-wmin = 0; wmax = 30
+wmin = 0; wmax = 20
 eta = 0.02
 Lanczos_maxiter = 600
 
@@ -68,7 +68,7 @@ Lanczos_maxiter = 600
 reduce_VS = 1
 
 if_H0_rotate_byU = 1
-basis_change_type = 'd_double' # 'all_states' or 'd_double'
+basis_change_type = 'all_states' # 'all_states' or 'd_double'
 if_print_VS_after_basis_change = 0
 
 if_compute_Aw = 0

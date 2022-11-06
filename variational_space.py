@@ -396,6 +396,10 @@ class VariationalSpace:
                                                                                         if not check_Pauli(slabel):
                                                                                             continue  
 
+                                                                                        # skip states with 4 holes on single layer
+#                                                                                         if uz==vz==tz==wz:
+#                                                                                             continue
+                                                                                            
                                                                                         state = create_state(slabel)
                                                                                         canonical_state,_,_ = make_state_canonical(state)
 

@@ -83,29 +83,85 @@ def write_lowpeak2(fname,A,ep,pds,pdp,w_peak,weight):
 #     return nNi_Cu, nO, dorbs, porbs
 
 
-# def get_statistic_3orb(o1,o2,o3):
-#     '''
-#     Get how many orbs are on Ni, O separately
-#     and write info into dorbs and porbs
-#     '''  
-#     nNi_Cu = 0; nO = 0; dorbs=[]; porbs=[]
-#     if o1 in pam.Ni_Cu_orbs:
-#         nNi_Cu += 1; dorbs.append(o1)   
-#     elif o1 in pam.O_orbs:
-#         nO += 1; porbs.append(o1)
-#     if o2 in pam.Ni_Cu_orbs:
-#         nNi_Cu += 1; dorbs.append(o2)
-#     elif o2 in pam.O_orbs:
-#         nO += 1; porbs.append(o2)     
-#     if o3 in pam.Ni_Cu_orbs:
-#         nNi_Cu += 1; dorbs.append(o3)
-#     elif o3 in pam.O_orbs:
-#         nO += 1; porbs.append(o3)  
-        
-#     assert(nO ==len(porbs))
-#     assert(nNi_Cu ==len(dorbs))
+def get_NiCu_layer_orbs(state):
+    '''
+    Get orbs in Ni and Cu layers separately
+    '''  
+    #state = VS.get_state(VS.lookup_tbl[i])
+            
+    s1 = state['hole1_spin']
+    s2 = state['hole2_spin']
+    s3 = state['hole3_spin']
+    s4 = state['hole4_spin']        
+    o1 = state['hole1_orb']
+    o2 = state['hole2_orb']
+    o3 = state['hole3_orb']
+    o4 = state['hole4_orb']        
+    x1, y1, z1 = state['hole1_coord']
+    x2, y2, z2 = state['hole2_coord']
+    x3, y3, z3 = state['hole3_coord']
+    x4, y4, z4 = state['hole4_coord']
+
+    ss = [s1,s2,s3,s4]
+    os = [o1,o2,o3,o4]
+    xs = [x1,x2,x3,x4]
+    ys = [y1,y2,y3,y4]
+    zs = [z1,z2,z3,z4]
     
-#     return nNi_Cu, nO, dorbs, porbs
+    Ni_z = []
+    for i in range(len(zs)):
+        if zs[i] ==1:
+            Ni_z.append(i)
+    
+    Ni_layer = []; Cu_layer = [];
+    for i in range(4):
+        if i in Ni_z:
+            Ni_layer.append(ss[i])
+            Ni_layer.append(os[i])
+            Ni_layer.append(xs[i])
+            Ni_layer.append(ys[i])
+            Ni_layer.append(zs[i])
+        else:
+            Cu_layer.append(ss[i])
+            Cu_layer.append(os[i])
+            Cu_layer.append(xs[i])
+            Cu_layer.append(ys[i])
+            Cu_layer.append(zs[i])
+#     print(Ni_layer)        
+    return Ni_layer, len(Ni_layer)/5, Cu_layer, len(Cu_layer)/5   # /5 to print out real number of holes
+        
+        
+    
+def get_statistic_orb(os):       
+    '''
+    get orb label, e.g. d9L or d9L2, for a given os = [01,02,...] (any length of os !!)
+    Assume that there is at least 1 hole, namely len(os)=1 or os is not empty
+    '''
+    Nos = len(os)
+    assert(Nos>0)
+    
+    nNi_Cu = 0; nO = 0
+    dorbs=[]; porbs=[]
+    
+    for i in range(Nos):
+        if os[i] in pam.Ni_Cu_orbs:
+            nNi_Cu += 1; dorbs.append(os[i])   
+        elif os[i] in pam.O_orbs:
+            nO += 1; porbs.append(os[i])
+        
+    
+    if nNi_Cu==1:
+        label = 'd9'
+    elif nNi_Cu==2:
+        label = 'd8'
+        
+    if nO==1:
+        label = 'd9'
+    elif nO==2:
+        label = 'd8'
+    
+    return nNi_Cu, nO, dorbs, porbs
+
 
 def get_orb_edep(orb,z,epCu,epNi):
     '''
@@ -130,10 +186,9 @@ def get_double_append(i,n,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s4,o4,x4,
     elif o1 in pam.O_orbs and o2 in pam.O_orbs:
         p_list.append(i)
 
-
-
-     
-
+        
+        
+        
 # def get_d_double_3hole(VS, i):
 #     '''
 #     Determine which two holes are doubly occupancy for ith 3hole state

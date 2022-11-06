@@ -24,8 +24,8 @@ def get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val):
     '''    
     Norb = pam.Norb
     dim = VS.dim
-    d9Ld9L_a1L_b1L_state_indices = []; d9Ld9L_a1L_b1L_state_labels = []
-    d9Ld9L_b1L_a1L_state_indices = []; d9Ld9L_b1L_a1L_state_labels = []
+    a1L_b1L_state_indices = []; a1L_b1L_state_labels = []
+    b1L_a1L_state_indices = []; b1L_a1L_state_labels = []
     
     for i in range(0,dim):
         # state is original state but its orbital info remains after basis change
@@ -71,11 +71,11 @@ def get_d9Ld9L_state_indices(VS,S_Ni_val, Sz_Ni_val):
 
         # d9_{a1b1} singlet:
         if S12==0 and Sz12==0 and o1=='d3z2r2' and o2=='dx2y2' and o3=='px' and o4=='px' and s1=='up' and s2=='up' and s3=='dn' and s4=='dn':
-            d9Ld9L_a1L_b1L_state_indices.append(i); d9Ld9L_a1L_b1L_state_labels.append('$S=0,a1L-b1L$')
+            a1L_b1L_state_indices.append(i); a1L_b1L_state_labels.append('$S=0,a1L-b1L$')
             print ("a1L_b1L_state_indices", i, ", state: orb= ",s1,o1,x1, y1, z1,s2,o2,x2, y2, z2,s3,o3,x3, y3, z3,s4,o4,x4, y4, z4)
     
 
-    return d9Ld9L_a1L_b1L_state_indices, d9Ld9L_a1L_b1L_state_labels
+    return a1L_b1L_state_indices, a1L_b1L_state_labels
 
 def get_d9d9L2_state_indices(VS,S_Ni_val, Sz_Ni_val):
     '''
