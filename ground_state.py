@@ -124,7 +124,7 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
         #    continue
             
         print ('eigenvalue = ', vals[k])
-        indices = np.nonzero(abs(vecs[:,k])>0.01)
+        indices = np.nonzero(abs(vecs[:,k])>0.1)
 
         wgt_LmLn = np.zeros(10)
         wgt_d9Ld10L2 = np.zeros(10)
@@ -191,14 +191,16 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
             s1 = slabel[0]; orb1 = slabel[1]; x1 = slabel[2]; y1 = slabel[3]; z1 = slabel[4];
             s2 = slabel[5]; orb2 = slabel[6]; x2 = slabel[7]; y2 = slabel[8]; z2 = slabel[9];
             s3 = slabel[10]; orb3 = slabel[11]; x3 = slabel[12]; y3 = slabel[13]; z3 = slabel[14];
-            s4 = slabel[15]; orb4 = slabel[16]; x4 = slabel[17]; y4 = slabel[18]; z4 = slabel[19];            
+            s4 = slabel[15]; orb4 = slabel[16]; x4 = slabel[17]; y4 = slabel[18]; z4 = slabel[19];     
+            
             if i in indices[0]: 
                 sumweight1=sumweight1+abs(vecs[i,k])**2
-#                 print (' state ', i, orb1,s1,x1,y1,z1,orb2,s2,x2,y2,z2,orb3,s3,x3,y3,z3,orb4,s4,x4,y4,z4,\
-#                        'S_Nid8=', S_Nid8_12, 'Sz_Nid8=', Sz_Nid8_12, 'S_Cud8=', S_Cud8_12, 'Sz_Cud8=', Sz_Cud8_12, \
-#                        'S_Ni_other=', S_Niother_12, 'Sz_Ni_other=', Sz_Niother_12, \
-#                        'S_Cu_other=', S_Cuother_12, 'Sz_Cu_other=', Sz_Cuother_12, \
-#                        ", weight = ", weight)   
+                print (' state ', i, ' ',orb1,s1,x1,y1,z1,' ',orb2,s2,x2,y2,z2,' ',orb3,s3,x3,y3,z3,' ',orb4,s4,x4,y4,z4,\
+                       '\n S_Nid8=', S_Nid8_12, ',  Sz_Nid8=', Sz_Nid8_12, \
+                       ',  S_Cud8=', S_Cud8_12, ',  Sz_Cud8=', Sz_Cud8_12, \
+                       '\n S_Ni_other=', S_Niother_12, ',  Sz_Ni_other=', Sz_Niother_12, \
+                       ',  S_Cu_other=', S_Cuother_12, ',  Sz_Cu_other=', Sz_Cuother_12, \
+                       ", weight = ", weight,'\n')   
                 
                 
             if (orb1 in pam.O_orbs) and  (orb2 in pam.O_orbs)  and  (orb3 in pam.O_orbs)  and  (orb4 in pam.O_orbs):
@@ -512,13 +514,7 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
                 wgt_d9d9L2[8]+=abs(vecs[i,k])**2                   
             if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
                 and z1==z3==1 and z2==z4==0:
-                wgt_d9Ld9L[16]+=abs(vecs[i,k])**2   
-                if i in indices[0]:
-                    print (' state ', i, orb1,s1,x1,y1,z1,orb2,s2,x2,y2,z2,orb3,s3,x3,y3,z3,orb4,s4,x4,y4,z4,\
-                           'S_Nid8=', S_Nid8_12, 'Sz_Nid8=', Sz_Nid8_12, 'S_Cud8=', S_Cud8_12, 'Sz_Cud8=', Sz_Cud8_12, \
-                           'S_Ni_other=', S_Niother_12, 'Sz_Ni_other=', Sz_Niother_12, \
-                           'S_Cu_other=', S_Cuother_12, 'Sz_Cu_other=', Sz_Cuother_12, \
-                           ", weight = ", weight)                   
+                wgt_d9Ld9L[16]+=abs(vecs[i,k])**2                     
             if (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs) and (orb3 in pam.Ni_Cu_orbs) and (orb4 in pam.O_orbs) \
                 and z1==1 and z2==z3==z4==0:
                 wgt_d9d8L[8]+=abs(vecs[i,k])**2   
