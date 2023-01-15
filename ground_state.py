@@ -83,8 +83,7 @@ def make_z_canonical(slabel):
     return slabel2
 
 
-def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_val,\
-                     S_other_Ni_val, Sz_other_Ni_val, S_other_Cu_val, Sz_other_Cu_val, tz):  
+def get_ground_state(matrix, VS, S_Ni_val, Sz_Ni_val, S_Cu_val, Sz_Cu_val, tz):  
     '''
     Obtain the ground state info, namely the lowest peak in Aw_dd's component
     in particular how much weight of various d8 channels: a1^2, b1^2, b2^2, e^2
@@ -115,9 +114,43 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
     vals.sort()
     print ('lowest eigenvalue of H from np.linalg.eigsh = ')
     print (vals)
+
+    wgt_LmLn = np.zeros(10)
+    wgt_d9Ld10L2 = np.zeros(10)
+    wgt_d9d10L3 = np.zeros(10)        
+    wgt_d9L2d10L= np.zeros(10)
+    wgt_d10Ld9L2= np.zeros(10)
+    wgt_d10d9L3= np.zeros(10)   
+    wgt_d10L2d9L= np.zeros(10)  
+    wgt_d8Ld10L= np.zeros(10)
+    wgt_d10Ld8L= np.zeros(10)        
+    wgt_d8d10L2= np.zeros(10)
+    wgt_d10d8L2 = np.zeros(10)
+    wgt_d8L2d10 = np.zeros(10)        
+    wgt_d10L2d8 = np.zeros(10) 
+    wgt_d9L2d9 = np.zeros(10)
+    wgt_d9d9L2 = np.zeros(10)    
+    wgt_d9Ld9L = np.zeros(25)         
+    wgt_d9d8L = np.zeros(10)     
+    wgt_d8d9L = np.zeros(10) 
+    wgt_d9Ld8 = np.zeros(10)  
+    wgt_d8Ld9 = np.zeros(10)
+    wgt_d8d8 = np.zeros(10)     
+    
+    
+    
+    if abs(vals[0]-vals[3])<10**(-5):
+        number = 4
+    elif abs(vals[0]-vals[2])<10**(-5):
+        number = 3        
+    elif abs(vals[0]-vals[1])<10**(-5):
+        number = 2
+    else:
+        number = 1
+    print ('Degeneracy of ground state is ' ,number)        
     
     #get state components in GS and another 9 higher states; note that indices is a tuple
-    for k in range(0,1):                                                                          #gai
+    for k in range(0,number):                                                                          #gai
         #if vals[k]<pam.w_start or vals[k]>pam.w_stop:
         #if vals[k]<11.5 or vals[k]>14.5:
         #if k<Neval:
@@ -126,28 +159,12 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
         print ('eigenvalue = ', vals[k])
         indices = np.nonzero(abs(vecs[:,k])>0.1)
 
-        wgt_LmLn = np.zeros(10)
-        wgt_d9Ld10L2 = np.zeros(10)
-        wgt_d9d10L3 = np.zeros(10)        
-        wgt_d9L2d10L= np.zeros(10)
-        wgt_d10Ld9L2= np.zeros(10)
-        wgt_d10d9L3= np.zeros(10)   
-        wgt_d10L2d9L= np.zeros(10)  
-        wgt_d8Ld10L= np.zeros(10)
-        wgt_d10Ld8L= np.zeros(10)        
-        wgt_d8d10L2= np.zeros(10)
-        wgt_d10d8L2 = np.zeros(10)
-        wgt_d8L2d10 = np.zeros(10)        
-        wgt_d10L2d8 = np.zeros(10) 
-        wgt_d9L2d9 = np.zeros(10)
-        wgt_d9d9L2 = np.zeros(10)    
-        wgt_d9Ld9L = np.zeros(18)         
-        wgt_d9d8L = np.zeros(10)     
-        wgt_d8d9L = np.zeros(10) 
-        wgt_d9Ld8 = np.zeros(10)  
-        wgt_d8Ld9 = np.zeros(10)
-        wgt_d8d8 = np.zeros(10) 
-  
+
+        
+#         s11=0
+#         s10=0        
+#         s01=0
+#         s00=0        
         #Sumweight refers to the general weight.Sumweight1 refers to the weight in indices.Sumweight_picture refers to the weight that is calculated.Sumweight2 refers to the weight that differs by orbits
 
         sumweight=0
@@ -176,15 +193,15 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
 
             #if abs(x1)>1. or abs(y1)>1. or abs(x2)>1. or abs(y2)>1.:
             #    continue
-            S_Nid8_12  = S_Nid8_val[i]
-            Sz_Nid8_12 = Sz_Nid8_val[i]
-            S_Cud8_12  = S_Cud8_val[i]
-            Sz_Cud8_12 = Sz_Cud8_val[i]
+            S_Ni_12  = S_Ni_val[i]
+            Sz_Ni_12 = Sz_Ni_val[i]
+            S_Cu_12  = S_Cu_val[i]
+            Sz_Cu_12 = Sz_Cu_val[i]
             
-            S_Niother_12  = S_other_Ni_val[i]
-            Sz_Niother_12 = Sz_other_Ni_val[i]
-            S_Cuother_12  = S_other_Cu_val[i]
-            Sz_Cuother_12 = Sz_other_Cu_val[i]
+#             S_Niother_12  = S_other_Ni_val[i]
+#             Sz_Niother_12 = Sz_other_Ni_val[i]
+#             S_Cuother_12  = S_other_Cu_val[i]
+#             Sz_Cuother_12 = Sz_other_Cu_val[i]
                 
             slabel=[s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2,s3,orb3,x3,y3,z3,s4,orb4,x4,y4,z4]
             slabel= make_z_canonical(slabel)
@@ -195,12 +212,10 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
             
             if i in indices[0]: 
                 sumweight1=sumweight1+abs(vecs[i,k])**2
-                print (' state ', i, ' ',orb1,s1,x1,y1,z1,' ',orb2,s2,x2,y2,z2,' ',orb3,s3,x3,y3,z3,' ',orb4,s4,x4,y4,z4,\
-                       '\n S_Nid8=', S_Nid8_12, ',  Sz_Nid8=', Sz_Nid8_12, \
-                       ',  S_Cud8=', S_Cud8_12, ',  Sz_Cud8=', Sz_Cud8_12, \
-                       '\n S_Ni_other=', S_Niother_12, ',  Sz_Ni_other=', Sz_Niother_12, \
-                       ',  S_Cu_other=', S_Cuother_12, ',  Sz_Cu_other=', Sz_Cuother_12, \
-                       ", weight = ", weight,'\n')   
+#                 print (' state ', i, ' ',orb1,s1,x1,y1,z1,' ',orb2,s2,x2,y2,z2,' ',orb3,s3,x3,y3,z3,' ',orb4,s4,x4,y4,z4,\
+#                    '\n S_Ni=', S_Ni_12, ',  Sz_Ni=', Sz_Ni_12, \
+#                    ',  S_Cu=', S_Cu_12, ',  Sz_Cu=', Sz_Cu_12, \
+#                    ", weight = ", weight,'\n')   
                 
                 
             if (orb1 in pam.O_orbs) and  (orb2 in pam.O_orbs)  and  (orb3 in pam.O_orbs)  and  (orb4 in pam.O_orbs):
@@ -251,68 +266,68 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
                     
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==1 and z3==1 and z4==0 :
-                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Nid8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==0:
                     wgt_d8Ld10L[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==1:
                     wgt_d8Ld10L[1]+=abs(vecs[i,k])**2    
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Ni_12==0:
                     wgt_d8Ld10L[2]+=abs(vecs[i,k])**2  
-                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Ni_12==0:
                     wgt_d8Ld10L[3]+=abs(vecs[i,k])**2  
                     
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==0 and z3==1 and z4==0 :
-                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Cud8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Cu_12==0:
                     wgt_d10Ld8L[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Cu_12==1:
                     wgt_d10Ld8L[1]+=abs(vecs[i,k])**2    
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Cu_12==0:
                     wgt_d10Ld8L[2]+=abs(vecs[i,k])**2  
-                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Cu_12==0:
                     wgt_d10Ld8L[3]+=abs(vecs[i,k])**2                      
                                           
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==1 and z3==z4==0 :
-                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Nid8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==0:
                     wgt_d8d10L2[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==1:
                     wgt_d8d10L2[1]+=abs(vecs[i,k])**2    
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Ni_12==0:
                     wgt_d8d10L2[2]+=abs(vecs[i,k])**2  
-                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Ni_12==0:
                     wgt_d8d10L2[3]+=abs(vecs[i,k])**2                     
                     
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==0 and z3==z4==0 :
-                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Cud8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Cu_12==0:
                     wgt_d10d8L2[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Cu_12==1:
                     wgt_d10d8L2[1]+=abs(vecs[i,k])**2    
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Cu_12==0:
                     wgt_d10d8L2[2]+=abs(vecs[i,k])**2  
-                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Cu_12==0:
                     wgt_d10d8L2[3]+=abs(vecs[i,k])**2                        
                                      
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==1 and z3==z4==1 :
-                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Nid8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==0:
                     wgt_d8L2d10[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==1:
                     wgt_d8L2d10[1]+=abs(vecs[i,k])**2    
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Ni_12==0:
                     wgt_d8L2d10[2]+=abs(vecs[i,k])**2  
-                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Ni_12==0:
                     wgt_d8L2d10[3]+=abs(vecs[i,k])**2                        
                
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==0 and z3==z4==1 :
-                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Cud8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Cu_12==0:
                     wgt_d10L2d8[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and S_Cu_12==1:
                     wgt_d10L2d8[1]+=abs(vecs[i,k])**2    
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and S_Cu_12==0:
                     wgt_d10L2d8[2]+=abs(vecs[i,k])**2  
-                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and S_Cu_12==0:
                     wgt_d10L2d8[3]+=abs(vecs[i,k])**2                         
 
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
@@ -340,131 +355,148 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
                 
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.O_orbs) \
                       and (orb4 in pam.O_orbs) and z1==1 and z2==0 and z3==1 and z4==0 :                  
-                if orb1=='d3z2r2' and orb2=='dx2y2' and s1==s2 and S_Niother_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2' and s1==s2 and S_Ni_12==0:
                     wgt_d9Ld9L[0]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1==s2 and S_Niother_12==0:
+                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1==s2 and S_Ni_12==0:
                     wgt_d9Ld9L[1]+=abs(vecs[i,k])**2   
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1==s2 and S_Niother_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1==s2 and S_Ni_12==0:
                     wgt_d9Ld9L[2]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='dx2y2'and s1==s2 and S_Niother_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'and s1==s2 and S_Ni_12==0:
                     wgt_d9Ld9L[3]+=abs(vecs[i,k])**2  
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and s1!=s2 and S_Niother_12==0:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and s1!=s2 and S_Ni_12==0:
                     wgt_d9Ld9L[4]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1!=s2 and S_Niother_12==0:
+                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1!=s2 and S_Ni_12==0:
                     wgt_d9Ld9L[5]+=abs(vecs[i,k])**2   
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1!=s2 and S_Niother_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1!=s2 and S_Ni_12==0:
                     wgt_d9Ld9L[6]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='dx2y2' and s1!=s2 and S_Niother_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and s1!=s2 and S_Ni_12==0:
                     wgt_d9Ld9L[7]+=abs(vecs[i,k])**2      
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and s1!=s2 and S_Niother_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and s1!=s2 and S_Ni_12==1:
                     wgt_d9Ld9L[8]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1!=s2 and S_Niother_12==1:
+                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1!=s2 and S_Ni_12==1:
                     wgt_d9Ld9L[9]+=abs(vecs[i,k])**2   
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1!=s2 and S_Niother_12==1:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1!=s2 and S_Ni_12==1:
                     wgt_d9Ld9L[10]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='dx2y2' and s1!=s2 and S_Niother_12==1:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and s1!=s2 and S_Ni_12==1:
                     wgt_d9Ld9L[11]+=abs(vecs[i,k])**2                   
-                if orb1=='d3z2r2' and orb2=='dx2y2' and s1==s2 and S_Niother_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and s1==s2 and S_Ni_12==1:
                     wgt_d9Ld9L[12]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1==s2 and S_Niother_12==1:
+                elif orb1=='dx2y2' and orb2=='d3z2r2' and s1==s2 and S_Ni_12==1:
                     wgt_d9Ld9L[13]+=abs(vecs[i,k])**2   
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1==s2 and S_Niother_12==1:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and s1==s2 and S_Ni_12==1:
                     wgt_d9Ld9L[14]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='dx2y2'and s1==s2 and S_Niother_12==1:
+                elif orb1=='dx2y2' and orb2=='dx2y2'and s1==s2 and S_Ni_12==1:
                     wgt_d9Ld9L[15]+=abs(vecs[i,k])**2  
+                if orb1=='d3z2r2' and orb2=='dx2y2':
+                    wgt_d9Ld9L[20]+=abs(vecs[i,k])**2 
+                    print (' state ', i, ' ',orb1,s1,x1,y1,z1,' ',orb2,s2,x2,y2,z2,' ',orb3,s3,x3,y3,z3,' ',orb4,s4,x4,y4,z4,\
+                         '\n S_Ni=', S_Ni_12, ',  Sz_Ni=', Sz_Ni_12, \
+                         ',  S_Cu=', S_Cu_12, ',  Sz_Cu=', Sz_Cu_12, \
+                          ", weight = ", weight,'\n')
+                    
+                if orb1=='d3z2r2' and orb2=='dx2y2' and s1==s2:
+                    wgt_d9Ld9L[21]+=abs(vecs[i,k])**2   
+                if orb1=='d3z2r2' and orb2=='dx2y2' and s1!=s2:
+                    wgt_d9Ld9L[22]+=abs(vecs[i,k])**2  
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==1:
+                    wgt_d9Ld9L[23]+=abs(vecs[i,k])**2   
+                if orb1=='d3z2r2' and orb2=='dx2y2' and S_Ni_12==0:
+                    wgt_d9Ld9L[24]+=abs(vecs[i,k])**2                      
+
+                                    
                     
                     
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.Ni_Cu_orbs) \
                       and (orb4 in pam.O_orbs) and z1==1 and z2==z3==z4==0:                     
-                if orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='d3z2r2' and S_Cud8_12==0:
+                if orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='d3z2r2' and S_Cu_12==0:
                     wgt_d9d8L[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9d8L[1]+=abs(vecs[i,k])**2                       
-                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9d8L[2]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==1:
                     wgt_d9d8L[3]+=abs(vecs[i,k])**2       
-                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==1:
                     wgt_d9d8L[4]+=abs(vecs[i,k])**2                     
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9d8L[5]+=abs(vecs[i,k])**2 
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9d8L[6]+=abs(vecs[i,k])**2                 
                   
                 
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.Ni_Cu_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==1 and z3==z4==0:                 
-                if orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Nid8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Ni_12==0:
                     wgt_d8d9L[0]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Ni_12==1:
                     wgt_d8d9L[1]+=abs(vecs[i,k])**2                       
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Ni_12==0:
                     wgt_d8d9L[2]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Ni_12==0:
                     wgt_d8d9L[3]+=abs(vecs[i,k])**2     
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Ni_12==1:
                     wgt_d8d9L[4]+=abs(vecs[i,k])**2       
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Ni_12==0:
                     wgt_d8d9L[5]+=abs(vecs[i,k])**2       
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Ni_12==0:
                     wgt_d8d9L[6]+=abs(vecs[i,k])**2                       
                  
                 
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.Ni_Cu_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z4==1 and z2==z3==0:                 
-                if orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='d3z2r2' and S_Cud8_12==0:
+                if orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='d3z2r2' and S_Cu_12==0:
                     wgt_d9Ld8[0]+=abs(vecs[i,k])**2                      
-                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9Ld8[1]+=abs(vecs[i,k])**2                       
-                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9Ld8[2]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==1:
                     wgt_d9Ld8[3]+=abs(vecs[i,k])**2       
-                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='dx2y2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Cu_12==1:
                     wgt_d9Ld8[4]+=abs(vecs[i,k])**2                     
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9Ld8[5]+=abs(vecs[i,k])**2 
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cud8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Cu_12==0:
                     wgt_d9Ld8[6]+=abs(vecs[i,k])**2                 
                     
                     
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.Ni_Cu_orbs) \
                       and (orb4 in pam.O_orbs) and z1==z2==z4==1 and z3==0:                      
-                if orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Nid8_12==0:
+                if orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Ni_12==0:
                     wgt_d8Ld9[0]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Ni_12==1:
                     wgt_d8Ld9[1]+=abs(vecs[i,k])**2                       
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='d3z2r2' and S_Ni_12==0:
                     wgt_d8Ld9[2]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2'  and  orb3=='dx2y2' and S_Ni_12==0:
                     wgt_d8Ld9[3]+=abs(vecs[i,k])**2     
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Ni_12==1:
                     wgt_d8Ld9[4]+=abs(vecs[i,k])**2       
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Ni_12==0:
                     wgt_d8Ld9[5]+=abs(vecs[i,k])**2   
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and  orb3=='dx2y2' and S_Ni_12==0:
                     wgt_d8Ld9[6]+=abs(vecs[i,k])**2                   
    
 
             elif (orb1 in pam.Ni_Cu_orbs) and (orb2 in pam.Ni_Cu_orbs)  and  (orb3 in pam.Ni_Cu_orbs) \
                       and (orb4 in pam.Ni_Cu_orbs) and z1==z2==1 and z3==z4==0:                      
-                if orb1=='dx2y2' and orb2=='dx2y2'  and orb3=='d3z2r2' and orb4=='d3z2r2'  and S_Nid8_12==0:
+                if orb1=='dx2y2' and orb2=='dx2y2'  and orb3=='d3z2r2' and orb4=='d3z2r2'  and S_Ni_12==0:
                     wgt_d8d8[0]+=abs(vecs[i,k])**2                       
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Ni_12==0:
                     wgt_d8d8[1]+=abs(vecs[i,k])**2     
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and orb3=='dx2y2' and orb4=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and orb3=='dx2y2' and orb4=='dx2y2' and S_Ni_12==0:
                     wgt_d8d8[2]+=abs(vecs[i,k])**2                          
-                elif orb1=='dx2y2' and orb2=='dx2y2'  and orb3=='dx2y2' and orb4=='dx2y2' and S_Nid8_12==0:
+                elif orb1=='dx2y2' and orb2=='dx2y2'  and orb3=='dx2y2' and orb4=='dx2y2' and S_Ni_12==0:
                     wgt_d8d8[3]+=abs(vecs[i,k])**2  
-                elif orb1=='d3z2r2' and orb2=='dx2y2'  and orb3=='dx2y2' and orb4=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2'  and orb3=='dx2y2' and orb4=='dx2y2' and S_Ni_12==1:
                     wgt_d8d8[4]+=abs(vecs[i,k])**2                  
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Ni_12==1:
                     wgt_d8d8[5]+=abs(vecs[i,k])**2 
-                elif orb1=='dx2y2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Cud8_12==1:
+                elif orb1=='dx2y2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Cu_12==1:
                     wgt_d8d8[6]+=abs(vecs[i,k])**2  
-                elif orb1=='d3z2r2' and orb2=='d3z2r2' and orb3=='d3z2r2' and orb4=='d3z2r2' and S_Nid8_12==0:
+                elif orb1=='d3z2r2' and orb2=='d3z2r2' and orb3=='d3z2r2' and orb4=='d3z2r2' and S_Ni_12==0:
                     wgt_d8d8[7]+=abs(vecs[i,k])**2  
-                elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Nid8_12==1:
+                elif orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2' and S_Ni_12==1:
                     wgt_d8d8[8]+=abs(vecs[i,k])**2                  
                     
                     
@@ -528,509 +560,551 @@ def get_ground_state(matrix, VS, S_Nid8_val, Sz_Nid8_val, S_Cud8_val, Sz_Cud8_va
                 and z1==z2==z4==1 and z3==0:
                 wgt_d8Ld9[8]+=abs(vecs[i,k])**2                   
 
+#             if (orb1 =='dx2y2') and (orb2 =='dx2y2') and (orb3 in pam.O_orbs) and (orb4 in pam.O_orbs) \
+#                 and z1==z3==1 and z2==z4==0:
+#                 print (' state ', i, ' ',orb1,s1,x1,y1,z1,' ',orb2,s2,x2,y2,z2,' ',orb3,s3,x3,y3,z3,' ',orb4,s4,x4,y4,z4,\
+#                        '\n S_Ni=', S_Ni_12, ',  Sz_Ni=', Sz_Ni_12, \
+#                        ',  S_Cu=', S_Cu_12, ',  Sz_Cu=', Sz_Cu_12, \
+#                        ", weight = ", weight,'\n')  
+#                 if S_Ni_12==1 and S_Cu_12==1:
+#                     s11+=abs(vecs[i,k])**2 
+#                 if S_Ni_12==1 and S_Cu_12==0:
+#                     s10+=abs(vecs[i,k])**2                     
+#                 if S_Ni_12==0 and S_Cu_12==1:
+#                     s01+=abs(vecs[i,k])**2                     
+#                 if S_Ni_12==0 and S_Cu_12==0:
+#                     s00+=abs(vecs[i,k])**2 
+                    
+                    
             sumweight=sumweight+abs(vecs[i,k])**2
-        print ('sumweight=',sumweight)
-        print ('sumweight1=',sumweight1)
-        
-     
-        
-        wgt_d9Ld10L2[2]=wgt_d9Ld10L2[0]+wgt_d9Ld10L2[1]        
-        wgt_d9d10L3[2]=wgt_d9d10L3[0]+wgt_d9d10L3[1]          
-        wgt_d9L2d10L[2]=wgt_d9L2d10L[0]+wgt_d9L2d10L[1]        
-        wgt_d10Ld9L2[2]=wgt_d10Ld9L2[0]+wgt_d10Ld9L2[1]  
-        wgt_d10d9L3[2]=wgt_d10d9L3[0]+wgt_d10d9L3[1]        
-        wgt_d10L2d9L[2]=wgt_d10L2d9L[0]+wgt_d10L2d9L[1]          
-        wgt_d8Ld10L[4]=wgt_d8Ld10L[0]+wgt_d8Ld10L[1]+wgt_d8Ld10L[2]+wgt_d8Ld10L[3]        
-        wgt_d10Ld8L[4]=wgt_d10Ld8L[0]+wgt_d10Ld8L[1]+wgt_d10Ld8L[2]+wgt_d10Ld8L[3]    
-        wgt_d8d10L2[4]=wgt_d8d10L2[0]+wgt_d8d10L2[1]+wgt_d8d10L2[2]+wgt_d8d10L2[3]          
-        wgt_d10d8L2[4]=wgt_d10d8L2[0]+wgt_d10d8L2[1]+wgt_d10d8L2[2]+wgt_d10d8L2[3]            
-        wgt_d8L2d10[4]=wgt_d8L2d10[0]+wgt_d8L2d10[1]+wgt_d8L2d10[2]+wgt_d8L2d10[3]          
-        wgt_d10L2d8[4]=wgt_d10L2d8[0]+wgt_d10L2d8[1]+wgt_d10L2d8[2]+wgt_d10L2d8[3]            
-        wgt_d9L2d9[4]=wgt_d9L2d9[0]+wgt_d9L2d9[1]+wgt_d9L2d9[2]+wgt_d9L2d9[3]
-        wgt_d9d9L2[4]=wgt_d9d9L2[0]+wgt_d9d9L2[1]+wgt_d9d9L2[2]+wgt_d9d9L2[3]
-        wgt_d9Ld9L[17]=wgt_d9Ld9L[0]+wgt_d9Ld9L[1]+wgt_d9Ld9L[2]+wgt_d9Ld9L[3]+wgt_d9Ld9L[4]+ wgt_d9Ld9L[5]\
-                  +wgt_d9Ld9L[6]+wgt_d9Ld9L[7]+wgt_d9Ld9L[8]+wgt_d9Ld9L[9]+wgt_d9Ld9L[10]+wgt_d9Ld9L[11]\
-                  +wgt_d9Ld9L[12]+wgt_d9Ld9L[13]+wgt_d9Ld9L[14]+wgt_d9Ld9L[15]
-        
-        
-        wgt_d9d8L[7]=wgt_d9d8L[0]+wgt_d9d8L[1]+wgt_d9d8L[2]+wgt_d9d8L[3]+wgt_d9d8L[4]+wgt_d9d8L[5] +wgt_d9d8L[6]        
-        wgt_d8d9L[7]=wgt_d8d9L[0]+wgt_d8d9L[1]+wgt_d8d9L[2]+wgt_d8d9L[3]+wgt_d8d9L[4]+wgt_d8d9L[5] +wgt_d8d9L[6]  
-        wgt_d9Ld8[7]=wgt_d9Ld8[0]+wgt_d9Ld8[1]+wgt_d9Ld8[2]+wgt_d9Ld8[3]+wgt_d9Ld8[4]+wgt_d9Ld8[5] +wgt_d9Ld8[6]     
-        wgt_d8Ld9[7]=wgt_d8Ld9[0]+wgt_d8Ld9[1]+wgt_d8Ld9[2]+wgt_d8Ld9[3]+wgt_d8Ld9[4]+wgt_d8Ld9[5] +wgt_d8Ld9[6] 
-        
-        
-        path = './data'		# create file
-
-        if os.path.isdir(path) == False:
-            os.mkdir(path) 
-        
-        txt=open('./data/LmLn','a')                                  
-        txt.write(str(wgt_LmLn[0])+'\n')
-        txt.close()     
-               
-        
-        txt=open('./data/d9Ld10L2_dx2y2','a')                                  
-        txt.write(str(wgt_d9Ld10L2[0])+'\n')
-        txt.close()  
-        txt=open('./data/d9Ld10L2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9Ld10L2[1])+'\n')
-        txt.close() 
-        txt=open('./data/d9Ld10L2','a')                                  
-        txt.write(str(wgt_d9Ld10L2[2])+'\n')
-        txt.close()         
-        
-        txt=open('./data/d9d10L3_dx2y2','a')                                  
-        txt.write(str(wgt_d9d10L3[0])+'\n')
-        txt.close()  
-        txt=open('./data/d9d10L3_d3z2r2','a')                                  
-        txt.write(str(wgt_d9d10L3[1])+'\n')
-        txt.close()
-        txt=open('./data/d9d10L3','a')                                  
-        txt.write(str(wgt_d9d10L3[2])+'\n')
-        txt.close()        
-        
-        txt=open('./data/d9L2d10L_dx2y2','a')                                  
-        txt.write(str(wgt_d9L2d10L[0])+'\n')
-        txt.close()  
-        txt=open('./data/d9L2d10L_d3z2r2','a')                                  
-        txt.write(str(wgt_d9L2d10L[1])+'\n')
-        txt.close()
-        txt=open('./data/d9L2d10L','a')                                  
-        txt.write(str(wgt_d9L2d10L[2])+'\n')
-        txt.close()        
-        
-        txt=open('./data/d10Ld9L2_dx2y2','a')                                  
-        txt.write(str(wgt_d10Ld9L2[0])+'\n')
-        txt.close()  
-        txt=open('./data/d10Ld9L2_d3z2r2','a')                                  
-        txt.write(str(wgt_d10Ld9L2[1])+'\n')
-        txt.close()
-        txt=open('./data/d10Ld9L2','a')                                  
-        txt.write(str(wgt_d10Ld9L2[2])+'\n')
-        txt.close()        
-        
-        txt=open('./data/d10d9L3_dx2y2','a')                                  
-        txt.write(str(wgt_d10d9L3[0])+'\n')
-        txt.close()  
-        txt=open('./data/d10d9L3_d3z2r2','a')                                  
-        txt.write(str(wgt_d10d9L3[1])+'\n')
-        txt.close()    
-        txt=open('./data/d10d9L3','a')                                  
-        txt.write(str(wgt_d10d9L3[2])+'\n')
-        txt.close()         
-        
-        txt=open('./data/d10L2d9L_dx2y2','a')                                  
-        txt.write(str(wgt_d10L2d9L[0])+'\n')
-        txt.close()  
-        txt=open('./data/d10L2d9L_d3z2r2','a')                                  
-        txt.write(str(wgt_d10L2d9L[1])+'\n')
-        txt.close()   
-        txt=open('./data/d10L2d9L','a')                                  
-        txt.write(str(wgt_d10L2d9L[2])+'\n')
-        txt.close()          
-        
-        txt=open('./data/d8Ld10L_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d8Ld10L[0])+'\n')
-        txt.close()  
-        txt=open('./data/d8Ld10L_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8Ld10L[1])+'\n')
-        txt.close() 
-        txt=open('./data/d8Ld10L_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8Ld10L[2])+'\n')
-        txt.close()        
-        txt=open('./data/d8Ld10L_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8Ld10L[3])+'\n')
-        txt.close()        
-        txt=open('./data/d8Ld10L','a')                                  
-        txt.write(str(wgt_d8Ld10L[4])+'\n')
-        txt.close()              
-        
-        txt=open('./data/d10Ld8L_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d10Ld8L[0])+'\n')
-        txt.close()  
-        txt=open('./data/d10Ld8L_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d10Ld8L[1])+'\n')
-        txt.close() 
-        txt=open('./data/d10Ld8L_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d10Ld8L[2])+'\n')
-        txt.close()          
-        txt=open('./data/d10Ld8L_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d10Ld8L[3])+'\n')
-        txt.close()          
-        txt=open('./data/d10Ld8L','a')                                  
-        txt.write(str(wgt_d10Ld8L[4])+'\n')
-        txt.close()               
-
-        txt=open('./data/d8d10L2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d10L2[0])+'\n')
-        txt.close()  
-        txt=open('./data/d8d10L2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8d10L2[1])+'\n')
-        txt.close() 
-        txt=open('./data/d8d10L2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8d10L2[2])+'\n')
-        txt.close()          
-        txt=open('./data/d8d10L2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d10L2[3])+'\n')
-        txt.close()          
-        txt=open('./data/d8d10L2','a')                                  
-        txt.write(str(wgt_d8d10L2[4])+'\n')
-        txt.close()         
-
-        txt=open('./data/d10d8L2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d10d8L2[0])+'\n')
-        txt.close()  
-        txt=open('./data/d10d8L2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d10d8L2[1])+'\n')
-        txt.close()  
-        txt=open('./data/d10d8L2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d10d8L2[2])+'\n')
-        txt.close()          
-        txt=open('./data/d10d8L2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d10d8L2[3])+'\n')
-        txt.close()          
-        txt=open('./data/d10d8L2','a')                                  
-        txt.write(str(wgt_d10d8L2[4])+'\n')
-        txt.close()         
-
-        txt=open('./data/d8L2d10_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d8L2d10[0])+'\n')
-        txt.close()  
-        txt=open('./data/d8L2d10_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8L2d10[1])+'\n')
-        txt.close()
-        txt=open('./data/d8L2d10_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8L2d10[2])+'\n')
-        txt.close()         
-        txt=open('./data/d8L2d10_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8L2d10[3])+'\n')
-        txt.close()         
-        txt=open('./data/d8L2d10','a')                                  
-        txt.write(str(wgt_d8L2d10[4])+'\n')
-        txt.close()         
-        
-        txt=open('./data/d10L2d8_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d10L2d8[0])+'\n')
-        txt.close()  
-        txt=open('./data/d10L2d8_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d10L2d8[1])+'\n')
-        txt.close()
-        txt=open('./data/d10L2d8_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d10L2d8[2])+'\n')
-        txt.close()         
-        txt=open('./data/d10L2d8_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d10L2d8[3])+'\n')
-        txt.close()         
-        txt=open('./data/d10L2d8','a')                                  
-        txt.write(str(wgt_d10L2d8[4])+'\n')
-        txt.close()         
-        
-        txt=open('./data/d9L2d9_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d9L2d9[0])+'\n')
-        txt.close()  
-        txt=open('./data/d9L2d9_dx2y2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9L2d9[1])+'\n')
-        txt.close()   
-        txt=open('./data/d9L2d9_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9L2d9[2])+'\n')
-        txt.close()  
-        txt=open('./data/d9L2d9_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d9L2d9[3])+'\n')
-        txt.close()           
-        txt=open('./data/d9L2d9','a')                                  
-        txt.write(str(wgt_d9L2d9[4])+'\n')
-        txt.close()           
-        
-        txt=open('./data/d9d9L2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d9d9L2[0])+'\n')
-        txt.close()        
-        txt=open('./data/d9d9L2_dx2y2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9d9L2[1])+'\n')
-        txt.close()       
-        txt=open('./data/d9d9L2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9d9L2[2])+'\n')
-        txt.close()        
-        txt=open('./data/d9d9L2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d9d9L2[3])+'\n')
-        txt.close()              
-        txt=open('./data/d9d9L2','a')                                  
-        txt.write(str(wgt_d9d9L2[4])+'\n')
-        txt.close()           
-        
-        txt=open('./data/d9Ld9L_d3z2r2_dx2y2_ss_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[0])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_d3z2r2_ss_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[1])+'\n')
-        txt.close()    
-        txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_ss_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[2])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_dx2y2_ss_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[3])+'\n')
-        txt.close()         
-        txt=open('./data/d9Ld9L_d3z2r2_dx2y2_sd_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[4])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_d3z2r2_sd_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[5])+'\n')
-        txt.close()    
-        txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_sd_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[6])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_dx2y2_sd_0','a')                                  
-        txt.write(str(wgt_d9Ld9L[7])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_d3z2r2_dx2y2_sd_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[8])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_d3z2r2_sd_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[9])+'\n')
-        txt.close()    
-        txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_sd_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[10])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_dx2y2_sd_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[11])+'\n')
-        txt.close()              
-        txt=open('./data/d9Ld9L_d3z2r2_dx2y2_ss_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[12])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_d3z2r2_ss_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[13])+'\n')
-        txt.close()    
-        txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_ss_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[14])+'\n')
-        txt.close()      
-        txt=open('./data/d9Ld9L_dx2y2_dx2y2_ss_1','a')                                  
-        txt.write(str(wgt_d9Ld9L[15])+'\n')
-        txt.close()              
-        txt=open('./data/d9Ld9L','a')                                  
-        txt.write(str(wgt_d9Ld9L[17])+'\n')
-        txt.close()      
+    print ('sumweight=',sumweight/number)
+    print ('sumweight1=',sumweight1/number)
+#         print ('s11=',s11)        
+#         print ('s10=',s10)       
+#         print ('s01=',s01)  
+#         print ('s00=',s00)          
 
 
-        txt=open('./data/d9d8L_dx2y2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9d8L[0])+'\n')
-        txt.close()          
-        txt=open('./data/d9d8L_d3z2r2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d9d8L[1])+'\n')
-        txt.close()              
-        txt=open('./data/d9d8L_dx2y2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d9d8L[2])+'\n')
-        txt.close()          
-        txt=open('./data/d9d8L_d3z2r2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d9d8L[3])+'\n')
-        txt.close()        
-        txt=open('./data/d9d8L_dx2y2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d9d8L[4])+'\n')
-        txt.close()          
-        txt=open('./data/d9d8L_d3z2r2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d9d8L[5])+'\n')
-        txt.close()  
-        txt=open('./data/d9d8L_dx2y2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d9d8L[6])+'\n')
-        txt.close()  
-        txt=open('./data/d9d8L','a')                                  
-        txt.write(str(wgt_d9d8L[7])+'\n')
-        txt.close()   
-        txt=open('./data/d9d8L_singlet','a')                                  
-        txt.write(str(wgt_d9d8L[7]-wgt_d9d8L[3]-wgt_d9d8L[4])+'\n')
-        txt.close()    
-        txt=open('./data/d9d8L_triplet','a')                                  
-        txt.write(str(wgt_d9d8L[3]+wgt_d9d8L[4])+'\n')
-        txt.close()            
-        
-        txt=open('./data/d8d9L_d3z2r2_dx2y2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8d9L[0])+'\n')
-        txt.close()          
-        txt=open('./data/d8d9L_d3z2r2_dx2y2_d3z2r2_S1','a')                                  
-        txt.write(str(wgt_d8d9L[1])+'\n')
-        txt.close()              
-        txt=open('./data/d8d9L_dx2y2_dx2y2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8d9L[2])+'\n')
-        txt.close()          
-        txt=open('./data/d8d9L_d3z2r2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d9L[3])+'\n')
-        txt.close()        
-        txt=open('./data/d8d9L_d3z2r2_dx2y2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8d9L[4])+'\n')
-        txt.close()          
-        txt=open('./data/d8d9L_d3z2r2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d9L[5])+'\n')
-        txt.close()  
-        txt=open('./data/d8d9L_dx2y2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d9L[6])+'\n')
-        txt.close()  
-        txt=open('./data/d8d9L','a')                                  
-        txt.write(str(wgt_d8d9L[7])+'\n')
-        txt.close()    
-        txt=open('./data/d8d9L_singlet','a')                                  
-        txt.write(str(wgt_d8d9L[7]-wgt_d8d9L[1]-wgt_d8d9L[4])+'\n')
-        txt.close()            
-        txt=open('./data/d8d9L_triplet','a')                                  
-        txt.write(str(wgt_d8d9L[1]+wgt_d8d9L[4])+'\n')
-        txt.close()    
-        
-        
-        
-        txt=open('./data/d9Ld8_dx2y2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d9Ld8[0])+'\n')
-        txt.close()          
-        txt=open('./data/d9Ld8_d3z2r2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d9Ld8[1])+'\n')
-        txt.close()              
-        txt=open('./data/d9Ld8_dx2y2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d9Ld8[2])+'\n')
-        txt.close()          
-        txt=open('./data/d9Ld8_d3z2r2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d9Ld8[3])+'\n')
-        txt.close()        
-        txt=open('./data/d9Ld8_dx2y2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d9Ld8[4])+'\n')
-        txt.close()          
-        txt=open('./data/d9Ld8_d3z2r2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d9Ld8[5])+'\n')
-        txt.close() 
-        txt=open('./data/d9Ld8_dx2y2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d9Ld8[6])+'\n')
-        txt.close() 
-        txt=open('./data/d9Ld8','a')                                  
-        txt.write(str(wgt_d9Ld8[7])+'\n')
-        txt.close()         
-        txt=open('./data/d9Ld8_singlet','a')                                  
-        txt.write(str(wgt_d9Ld8[7]-wgt_d9Ld8[3]-wgt_d9Ld8[4])+'\n')
-        txt.close()    
-        txt=open('./data/d9Ld8_triplet','a')                                  
-        txt.write(str(wgt_d9Ld8[3]+wgt_d9Ld8[4])+'\n')
-        txt.close()         
-        
-        
-        
-        txt=open('./data/d8Ld9_d3z2r2_dx2y2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8Ld9[0])+'\n')
-        txt.close()          
-        txt=open('./data/d8Ld9_d3z2r2_dx2y2_d3z2r2_S1','a')                                  
-        txt.write(str(wgt_d8Ld9[1])+'\n')
-        txt.close()              
-        txt=open('./data/d8Ld9_dx2y2_dx2y2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8Ld9[2])+'\n')
-        txt.close()          
-        txt=open('./data/d8Ld9_d3z2r2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d8Ld9[3])+'\n')
-        txt.close()        
-        txt=open('./data/d8Ld9_d3z2r2_dx2y2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8Ld9[4])+'\n')
-        txt.close()          
-        txt=open('./data/d8Ld9_d3z2r2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8Ld9[5])+'\n')
-        txt.close() 
-        txt=open('./data/d8Ld9_dx2y2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8Ld9[6])+'\n')
-        txt.close() 
-        txt=open('./data/d8Ld9','a')                                  
-        txt.write(str(wgt_d8Ld9[7])+'\n')
-        txt.close()    
-        txt=open('./data/d8Ld9_singlet','a')                                  
-        txt.write(str(wgt_d8Ld9[7]-wgt_d8Ld9[1]-wgt_d8Ld9[4])+'\n')
-        txt.close()            
-        txt=open('./data/d8Ld9_triplet','a')                                  
-        txt.write(str(wgt_d8Ld9[1]+wgt_d8Ld9[4])+'\n')
-        txt.close()            
-        
+    wgt_d9Ld10L2[2]=wgt_d9Ld10L2[0]+wgt_d9Ld10L2[1]        
+    wgt_d9d10L3[2]=wgt_d9d10L3[0]+wgt_d9d10L3[1]          
+    wgt_d9L2d10L[2]=wgt_d9L2d10L[0]+wgt_d9L2d10L[1]        
+    wgt_d10Ld9L2[2]=wgt_d10Ld9L2[0]+wgt_d10Ld9L2[1]  
+    wgt_d10d9L3[2]=wgt_d10d9L3[0]+wgt_d10d9L3[1]        
+    wgt_d10L2d9L[2]=wgt_d10L2d9L[0]+wgt_d10L2d9L[1]          
+    wgt_d8Ld10L[4]=wgt_d8Ld10L[0]+wgt_d8Ld10L[1]+wgt_d8Ld10L[2]+wgt_d8Ld10L[3]        
+    wgt_d10Ld8L[4]=wgt_d10Ld8L[0]+wgt_d10Ld8L[1]+wgt_d10Ld8L[2]+wgt_d10Ld8L[3]    
+    wgt_d8d10L2[4]=wgt_d8d10L2[0]+wgt_d8d10L2[1]+wgt_d8d10L2[2]+wgt_d8d10L2[3]          
+    wgt_d10d8L2[4]=wgt_d10d8L2[0]+wgt_d10d8L2[1]+wgt_d10d8L2[2]+wgt_d10d8L2[3]            
+    wgt_d8L2d10[4]=wgt_d8L2d10[0]+wgt_d8L2d10[1]+wgt_d8L2d10[2]+wgt_d8L2d10[3]          
+    wgt_d10L2d8[4]=wgt_d10L2d8[0]+wgt_d10L2d8[1]+wgt_d10L2d8[2]+wgt_d10L2d8[3]            
+    wgt_d9L2d9[4]=wgt_d9L2d9[0]+wgt_d9L2d9[1]+wgt_d9L2d9[2]+wgt_d9L2d9[3]
+    wgt_d9d9L2[4]=wgt_d9d9L2[0]+wgt_d9d9L2[1]+wgt_d9d9L2[2]+wgt_d9d9L2[3]
+    wgt_d9Ld9L[17]=wgt_d9Ld9L[0]+wgt_d9Ld9L[1]+wgt_d9Ld9L[2]+wgt_d9Ld9L[3]+wgt_d9Ld9L[4]+ wgt_d9Ld9L[5]\
+              +wgt_d9Ld9L[6]+wgt_d9Ld9L[7]+wgt_d9Ld9L[8]+wgt_d9Ld9L[9]+wgt_d9Ld9L[10]+wgt_d9Ld9L[11]\
+              +wgt_d9Ld9L[12]+wgt_d9Ld9L[13]+wgt_d9Ld9L[14]+wgt_d9Ld9L[15]
 
-        
-        txt=open('./data/d8d8_dx2y2_dx2y2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8d8[0])+'\n')
-        txt.close()          
-        txt=open('./data/d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d8[1])+'\n')
-        txt.close()              
-        txt=open('./data/d8d8_d3z2r2_d3z2r2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d8[2])+'\n')
-        txt.close()          
-        txt=open('./data/d8d8_dx2y2_dx2y2_dx2y2_dx2y2','a')                                  
-        txt.write(str(wgt_d8d8[3])+'\n')
-        txt.close()      
-        txt=open('./data/d8d8_d3z2r2_dx2y2_dx2y2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8d8[4])+'\n')
-        txt.close()        
-        txt=open('./data/d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8d8[5])+'\n')
-        txt.close()    
-        txt=open('./data/d8d8_dx2y2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8d8[6])+'\n')
-        txt.close()  
-        txt=open('./data/d8d8_d3z2r2_d3z2r2_d3z2r2_d3z2r2','a')                                  
-        txt.write(str(wgt_d8d8[7])+'\n')
-        txt.close() 
-        txt=open('./data/d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
-        txt.write(str(wgt_d8d8[8])+'\n')
-        txt.close()      
-        txt=open('./data/d8d8','a')                                  
-        txt.write(str(wgt_d8d8[9])+'\n')
-        txt.close()     
-        txt=open('./data/d8d8_singlet','a')                                  
-        txt.write(str(wgt_d8d8[9]-wgt_d8d8[4]-wgt_d8d8[5]-wgt_d8d8[6]-wgt_d8d8[8])+'\n')
-        txt.close()            
-        txt=open('./data/d8d8_triplet','a')                                  
-        txt.write(str(wgt_d8d8[4]+wgt_d8d8[5]+wgt_d8d8[6]+wgt_d8d8[8])+'\n')
-        txt.close()         
-        
-        sumweight_picture=wgt_LmLn[0]+wgt_d9Ld10L2[2]+wgt_d9d10L3[2]+wgt_d9L2d10L[2]+wgt_d10Ld9L2[2]+wgt_d10d9L3[2]\
-                    +wgt_d10L2d9L[2]+wgt_d8Ld10L[4]+wgt_d10Ld8L[4]+wgt_d8d10L2[4]+wgt_d10d8L2[4]+wgt_d8L2d10[4]\
-                    +wgt_d10L2d8[4]+wgt_d9L2d9[4]+wgt_d9d9L2[4]+wgt_d9Ld9L[17]+wgt_d9d8L[7]+wgt_d8d9L[7]\
-                    +wgt_d9Ld8[7]+wgt_d8Ld9[7]+ wgt_d8d8[9] 
-        sumweight2=wgt_LmLn[0]+wgt_d9Ld10L2[8]+wgt_d9d10L3[8]+wgt_d9L2d10L[8]+wgt_d10Ld9L2[8]+wgt_d10d9L3[8]\
-                          +wgt_d10L2d9L[8]+wgt_d8Ld10L[8]+wgt_d10Ld8L[8]+wgt_d8d10L2[8]+wgt_d10d8L2[8]\
-                          +wgt_d8L2d10[8]+ wgt_d10L2d8[8]+wgt_d9L2d9[8]+wgt_d9d9L2[8]+wgt_d9Ld9L[16]\
-                          +wgt_d9d8L[8]+wgt_d8d9L[8]+wgt_d9Ld8[8]+wgt_d8Ld9[8]+ wgt_d8d8[9] 
-        
-        print ('sumweight2=',sumweight2)        
-        print ('sumweight_picture=',sumweight_picture)
-        print ('LmLn=',wgt_LmLn[0])
-        print ('d9Ld10L2=',wgt_d9Ld10L2[2])
-        print ('d9d10L3=',wgt_d9d10L3[2])        
-        print ('d9L2d10L=',wgt_d9L2d10L[2])
-        print ('d10Ld9L2=',wgt_d10Ld9L2[2])        
-        print ('d10d9L3=',wgt_d10d9L3[2])
-        print ('d10L2d9L=',wgt_d10L2d9L[2])
-        print ('d8Ld10L=',wgt_d8Ld10L[4])
-        print ('d10Ld8L=',wgt_d10Ld8L[4])        
-        print ('d8d10L2=',wgt_d8d10L2[4])
-        print ('d10d8L2=',wgt_d10d8L2[4]) 
-        print ('d8L2d10=',wgt_d8L2d10[4])
-        print ('d10L2d8=',wgt_d10L2d8[4])
-        print ('d9L2d9=',wgt_d9L2d9[4])
-        print ('d9d9L2=',wgt_d9d9L2[4])        
-        print ('d9Ld9L=',wgt_d9Ld9L[17])        
-        print ('d9d8L=',wgt_d9d8L[7])        
-        print ('d8d9L=',wgt_d8d9L[7])
-        print ('d9Ld8=',wgt_d9Ld8[7])  
-        print ('d8Ld9=',wgt_d8Ld9[7])        
-        print ('d8d8=',wgt_d8d8[9])
 
-        print ('LmLn=',wgt_LmLn)
-        print ('d9Ld10L2=',wgt_d9Ld10L2)
-        print ('d9d10L3=',wgt_d9d10L3)        
-        print ('d9L2d10L=',wgt_d9L2d10L)
-        print ('d10Ld9L2=',wgt_d10Ld9L2)        
-        print ('d10d9L3=',wgt_d10d9L3)
-        print ('d10L2d9L=',wgt_d10L2d9L)
-        print ('d8Ld10L=',wgt_d8Ld10L)
-        print ('d10Ld8L=',wgt_d10Ld8L)        
-        print ('d8d10L2=',wgt_d8d10L2)
-        print ('d10d8L2=',wgt_d10d8L2) 
-        print ('d8L2d10=',wgt_d8L2d10)
-        print ('d10L2d8=',wgt_d10L2d8)
-        print ('d9L2d9=',wgt_d9L2d9)
-        print ('d9d9L2=',wgt_d9d9L2)        
-        print ('d9Ld9L=',wgt_d9Ld9L)  
-        print ('d9d8L=',wgt_d9d8L)        
-        print ('d8d9L=',wgt_d8d9L)
-        print ('d9Ld8=',wgt_d9Ld8)  
-        print ('d8Ld9=',wgt_d8Ld9)        
-        print ('d8d8=',wgt_d8d8)  
+    wgt_d9d8L[7]=wgt_d9d8L[0]+wgt_d9d8L[1]+wgt_d9d8L[2]+wgt_d9d8L[3]+wgt_d9d8L[4]+wgt_d9d8L[5] +wgt_d9d8L[6]        
+    wgt_d8d9L[7]=wgt_d8d9L[0]+wgt_d8d9L[1]+wgt_d8d9L[2]+wgt_d8d9L[3]+wgt_d8d9L[4]+wgt_d8d9L[5] +wgt_d8d9L[6]  
+    wgt_d9Ld8[7]=wgt_d9Ld8[0]+wgt_d9Ld8[1]+wgt_d9Ld8[2]+wgt_d9Ld8[3]+wgt_d9Ld8[4]+wgt_d9Ld8[5] +wgt_d9Ld8[6]     
+    wgt_d8Ld9[7]=wgt_d8Ld9[0]+wgt_d8Ld9[1]+wgt_d8Ld9[2]+wgt_d8Ld9[3]+wgt_d8Ld9[4]+wgt_d8Ld9[5] +wgt_d8Ld9[6] 
+
+
+    sumweight_picture=wgt_LmLn[0]+wgt_d9Ld10L2[2]+wgt_d9d10L3[2]+wgt_d9L2d10L[2]+wgt_d10Ld9L2[2]+wgt_d10d9L3[2]\
+                +wgt_d10L2d9L[2]+wgt_d8Ld10L[4]+wgt_d10Ld8L[4]+wgt_d8d10L2[4]+wgt_d10d8L2[4]+wgt_d8L2d10[4]\
+                +wgt_d10L2d8[4]+wgt_d9L2d9[4]+wgt_d9d9L2[4]+wgt_d9Ld9L[17]+wgt_d9d8L[7]+wgt_d8d9L[7]\
+                +wgt_d9Ld8[7]+wgt_d8Ld9[7]+ wgt_d8d8[9] 
+    sumweight2=wgt_LmLn[0]+wgt_d9Ld10L2[8]+wgt_d9d10L3[8]+wgt_d9L2d10L[8]+wgt_d10Ld9L2[8]+wgt_d10d9L3[8]\
+                      +wgt_d10L2d9L[8]+wgt_d8Ld10L[8]+wgt_d10Ld8L[8]+wgt_d8d10L2[8]+wgt_d10d8L2[8]\
+                      +wgt_d8L2d10[8]+ wgt_d10L2d8[8]+wgt_d9L2d9[8]+wgt_d9d9L2[8]+wgt_d9Ld9L[16]\
+                      +wgt_d9d8L[8]+wgt_d8d9L[8]+wgt_d9Ld8[8]+wgt_d8Ld9[8]+ wgt_d8d8[9] 
+
+
+
+
+    path = './data'		# create file
+
+    if os.path.isdir(path) == False:
+        os.mkdir(path) 
+
+    txt=open('./data/LmLn','a')                                  
+    txt.write(str(wgt_LmLn[0]/number)+'\n')
+    txt.close()     
+
+
+    txt=open('./data/d9Ld10L2_dx2y2','a')                                  
+    txt.write(str(wgt_d9Ld10L2[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9Ld10L2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9Ld10L2[1]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d9Ld10L2','a')                                  
+    txt.write(str(wgt_d9Ld10L2[2]/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/d9d10L3_dx2y2','a')                                  
+    txt.write(str(wgt_d9d10L3[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9d10L3_d3z2r2','a')                                  
+    txt.write(str(wgt_d9d10L3[1]/number)+'\n')
+    txt.close()
+    txt=open('./data/d9d10L3','a')                                  
+    txt.write(str(wgt_d9d10L3[2]/number)+'\n')
+    txt.close()        
+
+    txt=open('./data/d9L2d10L_dx2y2','a')                                  
+    txt.write(str(wgt_d9L2d10L[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9L2d10L_d3z2r2','a')                                  
+    txt.write(str(wgt_d9L2d10L[1]/number)+'\n')
+    txt.close()
+    txt=open('./data/d9L2d10L','a')                                  
+    txt.write(str(wgt_d9L2d10L[2]/number)+'\n')
+    txt.close()        
+
+    txt=open('./data/d10Ld9L2_dx2y2','a')                                  
+    txt.write(str(wgt_d10Ld9L2[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10Ld9L2_d3z2r2','a')                                  
+    txt.write(str(wgt_d10Ld9L2[1]/number)+'\n')
+    txt.close()
+    txt=open('./data/d10Ld9L2','a')                                  
+    txt.write(str(wgt_d10Ld9L2[2]/number)+'\n')
+    txt.close()        
+
+    txt=open('./data/d10d9L3_dx2y2','a')                                  
+    txt.write(str(wgt_d10d9L3[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10d9L3_d3z2r2','a')                                  
+    txt.write(str(wgt_d10d9L3[1]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d10d9L3','a')                                  
+    txt.write(str(wgt_d10d9L3[2]/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/d10L2d9L_dx2y2','a')                                  
+    txt.write(str(wgt_d10L2d9L[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10L2d9L_d3z2r2','a')                                  
+    txt.write(str(wgt_d10L2d9L[1]/number)+'\n')
+    txt.close()   
+    txt=open('./data/d10L2d9L','a')                                  
+    txt.write(str(wgt_d10L2d9L[2]/number)+'\n')
+    txt.close()          
+
+    txt=open('./data/d8Ld10L_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d8Ld10L[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d8Ld10L_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8Ld10L[1]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d8Ld10L_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8Ld10L[2]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d8Ld10L_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8Ld10L[3]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d8Ld10L','a')                                  
+    txt.write(str(wgt_d8Ld10L[4]/number)+'\n')
+    txt.close()              
+
+    txt=open('./data/d10Ld8L_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d10Ld8L[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10Ld8L_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d10Ld8L[1]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d10Ld8L_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d10Ld8L[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d10Ld8L_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d10Ld8L[3]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d10Ld8L','a')                                  
+    txt.write(str(wgt_d10Ld8L[4]/number)+'\n')
+    txt.close()               
+
+    txt=open('./data/d8d10L2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d10L2[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d8d10L2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8d10L2[1]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d8d10L2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8d10L2[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d10L2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d10L2[3]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d10L2','a')                                  
+    txt.write(str(wgt_d8d10L2[4]/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/d10d8L2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d10d8L2[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10d8L2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d10d8L2[1]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10d8L2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d10d8L2[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d10d8L2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d10d8L2[3]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d10d8L2','a')                                  
+    txt.write(str(wgt_d10d8L2[4]/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/d8L2d10_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d8L2d10[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d8L2d10_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8L2d10[1]/number)+'\n')
+    txt.close()
+    txt=open('./data/d8L2d10_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8L2d10[2]/number)+'\n')
+    txt.close()         
+    txt=open('./data/d8L2d10_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8L2d10[3]/number)+'\n')
+    txt.close()         
+    txt=open('./data/d8L2d10','a')                                  
+    txt.write(str(wgt_d8L2d10[4]/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/d10L2d8_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d10L2d8[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d10L2d8_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d10L2d8[1]/number)+'\n')
+    txt.close()
+    txt=open('./data/d10L2d8_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d10L2d8[2]/number)+'\n')
+    txt.close()         
+    txt=open('./data/d10L2d8_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d10L2d8[3]/number)+'\n')
+    txt.close()         
+    txt=open('./data/d10L2d8','a')                                  
+    txt.write(str(wgt_d10L2d8[4]/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/d9L2d9_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d9L2d9[0]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9L2d9_dx2y2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9L2d9[1]/number)+'\n')
+    txt.close()   
+    txt=open('./data/d9L2d9_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9L2d9[2]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9L2d9_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d9L2d9[3]/number)+'\n')
+    txt.close()           
+    txt=open('./data/d9L2d9','a')                                  
+    txt.write(str(wgt_d9L2d9[4]/number)+'\n')
+    txt.close()           
+
+    txt=open('./data/d9d9L2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d9d9L2[0]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d9d9L2_dx2y2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9d9L2[1]/number)+'\n')
+    txt.close()       
+    txt=open('./data/d9d9L2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9d9L2[2]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d9d9L2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d9d9L2[3]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d9d9L2','a')                                  
+    txt.write(str(wgt_d9d9L2[4]/number)+'\n')
+    txt.close()           
+
+    txt=open('./data/d9Ld9L_d3z2r2_dx2y2_ss_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[0]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_d3z2r2_ss_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[1]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_ss_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[2]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_dx2y2_ss_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[3]/number)+'\n')
+    txt.close()         
+    txt=open('./data/d9Ld9L_d3z2r2_dx2y2_sd_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[4]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_d3z2r2_sd_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[5]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_sd_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[6]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_dx2y2_sd_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[7]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_d3z2r2_dx2y2_sd_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[8]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_d3z2r2_sd_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[9]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_sd_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[10]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_dx2y2_sd_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[11]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d9Ld9L_d3z2r2_dx2y2_ss_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[12]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_d3z2r2_ss_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[13]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d9Ld9L_d3z2r2_d3z2r2_ss_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[14]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d9Ld9L_dx2y2_dx2y2_ss_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[15]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d9Ld9L','a')                                  
+    txt.write(str(wgt_d9Ld9L[17]/number)+'\n')
+    txt.close()     
+    txt=open('./data/d9Ld9L_ab','a')                                  
+    txt.write(str(wgt_d9Ld9L[20]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9Ld9L_ab_ss','a')                                  
+    txt.write(str(wgt_d9Ld9L[21]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9Ld9L_ab_sd','a')                                  
+    txt.write(str(wgt_d9Ld9L[22]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9Ld9L_ab_1','a')                                  
+    txt.write(str(wgt_d9Ld9L[23]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9Ld9L_ab_0','a')                                  
+    txt.write(str(wgt_d9Ld9L[24]/number)+'\n')
+    txt.close()           
+
+
+
+    txt=open('./data/d9d8L_dx2y2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9d8L[0]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9d8L_d3z2r2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d9d8L[1]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d9d8L_dx2y2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d9d8L[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9d8L_d3z2r2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d9d8L[3]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d9d8L_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d9d8L[4]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9d8L_d3z2r2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d9d8L[5]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9d8L_dx2y2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d9d8L[6]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d9d8L','a')                                  
+    txt.write(str(wgt_d9d8L[7]/number)+'\n')
+    txt.close()   
+    txt=open('./data/d9d8L_singlet','a')                                  
+    txt.write(str((wgt_d9d8L[7]-wgt_d9d8L[3]-wgt_d9d8L[4])/number)+'\n')
+    txt.close()    
+    txt=open('./data/d9d8L_triplet','a')                                  
+    txt.write(str((wgt_d9d8L[3]+wgt_d9d8L[4])/number)+'\n')
+    txt.close()            
+
+    txt=open('./data/d8d9L_d3z2r2_dx2y2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8d9L[0]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d9L_d3z2r2_dx2y2_d3z2r2_S1','a')                                  
+    txt.write(str(wgt_d8d9L[1]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d8d9L_dx2y2_dx2y2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8d9L[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d9L_d3z2r2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d9L[3]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d8d9L_d3z2r2_dx2y2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8d9L[4]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d9L_d3z2r2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d9L[5]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d8d9L_dx2y2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d9L[6]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d8d9L','a')                                  
+    txt.write(str(wgt_d8d9L[7]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d8d9L_singlet','a')                                  
+    txt.write(str((wgt_d8d9L[7]-wgt_d8d9L[1]-wgt_d8d9L[4])/number)+'\n')
+    txt.close()            
+    txt=open('./data/d8d9L_triplet','a')                                  
+    txt.write(str((wgt_d8d9L[1]+wgt_d8d9L[4])/number)+'\n')
+    txt.close()    
+
+
+
+    txt=open('./data/d9Ld8_dx2y2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d9Ld8[0]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9Ld8_d3z2r2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d9Ld8[1]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d9Ld8_dx2y2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d9Ld8[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9Ld8_d3z2r2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d9Ld8[3]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d9Ld8_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d9Ld8[4]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d9Ld8_d3z2r2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d9Ld8[5]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d9Ld8_dx2y2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d9Ld8[6]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d9Ld8','a')                                  
+    txt.write(str(wgt_d9Ld8[7]/number)+'\n')
+    txt.close()         
+    txt=open('./data/d9Ld8_singlet','a')                                  
+    txt.write(str((wgt_d9Ld8[7]-wgt_d9Ld8[3]-wgt_d9Ld8[4])/number)+'\n')
+    txt.close()    
+    txt=open('./data/d9Ld8_triplet','a')                                  
+    txt.write(str((wgt_d9Ld8[3]+wgt_d9Ld8[4])/number)+'\n')
+    txt.close()         
+
+
+
+    txt=open('./data/d8Ld9_d3z2r2_dx2y2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8Ld9[0]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8Ld9_d3z2r2_dx2y2_d3z2r2_S1','a')                                  
+    txt.write(str(wgt_d8Ld9[1]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d8Ld9_dx2y2_dx2y2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8Ld9[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8Ld9_d3z2r2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d8Ld9[3]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d8Ld9_d3z2r2_dx2y2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8Ld9[4]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8Ld9_d3z2r2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8Ld9[5]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d8Ld9_dx2y2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8Ld9[6]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d8Ld9','a')                                  
+    txt.write(str(wgt_d8Ld9[7]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d8Ld9_singlet','a')                                  
+    txt.write(str((wgt_d8Ld9[7]-wgt_d8Ld9[1]-wgt_d8Ld9[4])/number)+'\n')
+    txt.close()            
+    txt=open('./data/d8Ld9_triplet','a')                                  
+    txt.write(str((wgt_d8Ld9[1]+wgt_d8Ld9[4])/number)+'\n')
+    txt.close()            
+
+
+
+    txt=open('./data/d8d8_dx2y2_dx2y2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8d8[0]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d8[1]/number)+'\n')
+    txt.close()              
+    txt=open('./data/d8d8_d3z2r2_d3z2r2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d8[2]/number)+'\n')
+    txt.close()          
+    txt=open('./data/d8d8_dx2y2_dx2y2_dx2y2_dx2y2','a')                                  
+    txt.write(str(wgt_d8d8[3]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d8d8_d3z2r2_dx2y2_dx2y2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8d8[4]/number)+'\n')
+    txt.close()        
+    txt=open('./data/d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8d8[5]/number)+'\n')
+    txt.close()    
+    txt=open('./data/d8d8_dx2y2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8d8[6]/number)+'\n')
+    txt.close()  
+    txt=open('./data/d8d8_d3z2r2_d3z2r2_d3z2r2_d3z2r2','a')                                  
+    txt.write(str(wgt_d8d8[7]/number)+'\n')
+    txt.close() 
+    txt=open('./data/d8d8_d3z2r2_dx2y2_d3z2r2_dx2y2_S1','a')                                  
+    txt.write(str(wgt_d8d8[8]/number)+'\n')
+    txt.close()      
+    txt=open('./data/d8d8','a')                                  
+    txt.write(str(wgt_d8d8[9]/number)+'\n')
+    txt.close()     
+    txt=open('./data/d8d8_singlet','a')                                  
+    txt.write(str((wgt_d8d8[9]-wgt_d8d8[4]-wgt_d8d8[5]-wgt_d8d8[6]-wgt_d8d8[8])/number)+'\n')
+    txt.close()            
+    txt=open('./data/d8d8_triplet','a')                                  
+    txt.write(str((wgt_d8d8[4]+wgt_d8d8[5]+wgt_d8d8[6]+wgt_d8d8[8])/number)+'\n')
+    txt.close()         
+
+    txt=open('./data/number','a')                                  
+    txt.write(str(number)+'\n')
+    txt.close() 
+
+    print ('sumweight2=',sumweight2/number)        
+    print ('sumweight_picture=',sumweight_picture/number)
+    print ('LmLn=',wgt_LmLn[0]/number)
+    print ('d9Ld10L2=',wgt_d9Ld10L2[2]/number)
+    print ('d9d10L3=',wgt_d9d10L3[2]/number)        
+    print ('d9L2d10L=',wgt_d9L2d10L[2]/number)
+    print ('d10Ld9L2=',wgt_d10Ld9L2[2]/number)        
+    print ('d10d9L3=',wgt_d10d9L3[2]/number)
+    print ('d10L2d9L=',wgt_d10L2d9L[2]/number)
+    print ('d8Ld10L=',wgt_d8Ld10L[4]/number)
+    print ('d10Ld8L=',wgt_d10Ld8L[4]/number)        
+    print ('d8d10L2=',wgt_d8d10L2[4]/number)
+    print ('d10d8L2=',wgt_d10d8L2[4]/number) 
+    print ('d8L2d10=',wgt_d8L2d10[4]/number)
+    print ('d10L2d8=',wgt_d10L2d8[4]/number)
+    print ('d9L2d9=',wgt_d9L2d9[4]/number)
+    print ('d9d9L2=',wgt_d9d9L2[4]/number)        
+    print ('d9Ld9L=',wgt_d9Ld9L[17]/number)        
+    print ('d9d8L=',wgt_d9d8L[7]/number)        
+    print ('d8d9L=',wgt_d8d9L[7]/number)
+    print ('d9Ld8=',wgt_d9Ld8[7]/number)  
+    print ('d8Ld9=',wgt_d8Ld9[7]/number)        
+    print ('d8d8=',wgt_d8d8[9]/number)
+
+    print ('LmLn=',wgt_LmLn/number)
+    print ('d9Ld10L2=',wgt_d9Ld10L2/number)
+    print ('d9d10L3=',wgt_d9d10L3/number)        
+    print ('d9L2d10L=',wgt_d9L2d10L/number)
+    print ('d10Ld9L2=',wgt_d10Ld9L2/number)        
+    print ('d10d9L3=',wgt_d10d9L3/number)
+    print ('d10L2d9L=',wgt_d10L2d9L/number)
+    print ('d8Ld10L=',wgt_d8Ld10L/number)
+    print ('d10Ld8L=',wgt_d10Ld8L/number)        
+    print ('d8d10L2=',wgt_d8d10L2/number)
+    print ('d10d8L2=',wgt_d10d8L2/number) 
+    print ('d8L2d10=',wgt_d8L2d10/number)
+    print ('d10L2d8=',wgt_d10L2d8/number)
+    print ('d9L2d9=',wgt_d9L2d9/number)
+    print ('d9d9L2=',wgt_d9d9L2/number)        
+    print ('d9Ld9L=',wgt_d9Ld9L/number)  
+    print ('d9d8L=',wgt_d9d8L/number)        
+    print ('d8d9L=',wgt_d8d9L/number)
+    print ('d9Ld8=',wgt_d9Ld8/number)  
+    print ('d8Ld9=',wgt_d8Ld9/number)        
+    print ('d8d8=',wgt_d8d8/number)  
         
     print("--- get_ground_state %s seconds ---" % (time.time() - t1))
                 
