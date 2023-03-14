@@ -86,6 +86,7 @@ def write_lowpeak2(fname,A,ep,pds,pdp,w_peak,weight):
 def get_NiCu_layer_orbs(state):
     '''
     Get orbs in Ni and Cu layers separately
+   
     '''  
     #state = VS.get_state(VS.lookup_tbl[i])
             
@@ -108,27 +109,31 @@ def get_NiCu_layer_orbs(state):
     ys = [y1,y2,y3,y4]
     zs = [z1,z2,z3,z4]
     
-    Ni_z = []
-    for i in range(len(zs)):
-        if zs[i] ==1:
-            Ni_z.append(i)
+    Ni_i = []
+
     
-    Ni_layer = []; Cu_layer = [];
+    Ni_layer = []; Cu_layer = [];Cu_i = []
     for i in range(4):
-        if i in Ni_z:
+        if zs[i]==1:
             Ni_layer.append(ss[i])
             Ni_layer.append(os[i])
             Ni_layer.append(xs[i])
             Ni_layer.append(ys[i])
             Ni_layer.append(zs[i])
+            Ni_i.append(i)
         else:
             Cu_layer.append(ss[i])
             Cu_layer.append(os[i])
             Cu_layer.append(xs[i])
             Cu_layer.append(ys[i])
             Cu_layer.append(zs[i])
-#     print(Ni_layer)        
-    return Ni_layer, len(Ni_layer)/5, Cu_layer, len(Cu_layer)/5   # /5 to print out real number of holes
+            Cu_i.append(i)
+
+    #Ni_z,Cu_i represents the number on Ni,Cu
+#     print(s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4)
+#     print(Ni_layer,Cu_layer,Ni_i,Cu_i,len(Ni_layer)/5, len(Cu_layer)/5)
+    
+    return Ni_layer, len(Ni_layer)/5, Cu_layer, len(Cu_layer)/5,Ni_i,Cu_i   # /5 to print out real number of holes
         
         
     
@@ -158,7 +163,7 @@ def get_statistic_orb(os):
     if nO==1:
         label = 'd9'
     elif nO==2:
-        label = 'd8'
+        label = 'd10'
     
     return nNi_Cu, nO, dorbs, porbs
 

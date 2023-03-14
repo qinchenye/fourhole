@@ -2,7 +2,7 @@ import math
 import numpy as np
 M_PI = math.pi
 
-Mc = 2
+Mc =2
 
 # Note that Ni-d and O-p orbitals use hole language
 # while Nd orbs use electron language
@@ -13,11 +13,11 @@ edCu = {'d3z2r2': 0.0,\
         'dyz'   : 0.0}
 edNi = edCu
 
-epNis = np.arange(7.0, 7.01, 1.0)
-epCus = np.arange(7.0, 7.01, 1.0)
+epNis = np.arange(2.75, 2.76, 1.0)
+epCus = np.arange(2.75, 2.76, 1.0)
 
-ANis = np.arange(6.0, 6.01, 1.0)
-ACus = np.arange(6.0, 6.01, 1.0)
+ANis = np.arange(6.5, 6.51, 1.0)
+ACus = np.arange(6.5, 6.51, 1.0)
 
 B = 0.15
 C = 0.58
@@ -36,8 +36,8 @@ C = 0.58
 Norb = 7
 if Norb==7:
     #tpds = [0.00001]  # for check_CuO4_eigenvalues.py
-    tpds = np.linspace(1.3, 1.3, num=1, endpoint=True) #[0.25]
-#    tpds = [0.01]
+    tpds = np.linspace(1.5, 1.5, num=1, endpoint=True) #[0.25]
+#     tpds = [0.01]
     tpps = [0.55]
 elif Norb==9 or Norb==11:    
     # pdp = sqrt(3)/4*pds so that tpd(b2)=tpd(b1)/2: see Eskes's thesis and 1990 paper
@@ -58,10 +58,16 @@ elif Norb==9 or Norb==11:
 #     pps = 0.01
 #     ppp = 0.01
 
-tzs =np.arange(5, 5.51, 10)                                       
+tzs =np.arange(8.0,9.01,140)  
+
+
+if_tz_exist = 1
+    #if if_tz_exist = 0,tz exist in all orbits.
+    #if if_tz_exist = 1,tz exist in d orbits.
+    #if if_tz_exist = 2,tz exist in d3z2r2 orbits.    
     
-wmin = 0; wmax = 20
-eta = 0.02
+wmin = -10; wmax = 30
+eta = 0.1
 Lanczos_maxiter = 600
 
 # restriction on variational space

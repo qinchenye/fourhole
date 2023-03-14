@@ -59,9 +59,28 @@ def reorder_state(slabel):
     state_label = slabel
     phase = 1.0
 
-#     if x2==0 and y2==0:
-#         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1] 
+
+    
+#     if (x2,y2)<(x1,y1): #and (x2!=0 or y2!=0):
+#         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
 #         phase = -1.0
+        
+#     # note that z1 can differ from z2 in the presence of two layers
+#     elif (x1,y1)==(x2,y2):     
+#         if z1==z2:
+#             if s1==s2:
+#                 o12 = list(sorted([orb1,orb2]))
+#                 if o12[0]==orb2:
+#                     state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
+#                     phase = -1.0  
+#             elif s1=='dn' and s2=='up':
+#                 state_label = ['up',orb2,x2,y2,z2,'dn',orb1,x1,y1,z1]
+#                 phase = -1.0
+#         elif z1==0 and z2==1:
+#             state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
+#             phase = -1.0  
+
+
     
     if (x2,y2)<(x1,y1): #and (x2!=0 or y2!=0):
         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
@@ -81,6 +100,8 @@ def reorder_state(slabel):
         elif z1==0 and z2==1:
             state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
             phase = -1.0  
+
+
             
     return state_label, phase
                 
@@ -158,11 +179,27 @@ def make_state_canonical(state):
     tmp, ph = reorder_state(tlabel)
     phase *= ph
 
+#     tlabel = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2]
+#     tmp12,ph = reorder_state(tlabel)
+#     phase *= ph
+#     tlabel = tmp12[5:10]+[s3,orb3,x3,y3,z3]
+#     tmp23, ph = reorder_state(tlabel)
+#     phase *= ph
+#     if tmp23 == tlabel:
+#         slabel = tmp12 +[s3,orb3,x3,y3,z3]
+#     else:
+#         tlabel=tmp12[0:5]+[s3,orb3,x3,y3,z3]
+#         tmp13,ph = reorder_state(tlabel)
+#         phase *= ph
+#         slabel=tlabel+tmp12[5:10]
+#-----------------------------------------------------        
     slabel = tmp+tmp23[5:10]
     tlabel = slabel[10:15] + [s4,orb4,x4,y4,z4]
     tmp34, ph = reorder_state(tlabel)
     phase *= ph
-    
+
+
+        
     '''
     For four holes,to generate the canonical_state:
     1. reorder three holes;
@@ -174,19 +211,19 @@ def make_state_canonical(state):
     
     if tmp34 == tlabel:
         slabel2 = slabel + [s4,orb4,x4,y4,z4]
-    elif  tmp34 != tlabel:
+    else:
         tlabel = slabel[5:10] + [s4,orb4,x4,y4,z4]
         tmp24, ph = reorder_state(tlabel)
         phase *= ph
         if tmp24 == tlabel:
             slabel2 = slabel[0:10]+ [s4,orb4,x4,y4,z4] + slabel[10:15]
-        elif  tmp24 != tlabel:
+        else:
             tlabel = slabel[0:5] + [s4,orb4,x4,y4,z4]   
             tmp14, ph = reorder_state(tlabel)
             phase *= ph 
             if tmp14 == tlabel:
                 slabel2 = slabel[0:5]+ [s4,orb4,x4,y4,z4] + slabel[5:15]
-            elif  tmp24 != tlabel:
+            else:
                 slabel2 = [s4,orb4,x4,y4,z4] + slabel[0:15] 
     
     canonical_state = create_state(slabel2)

@@ -206,13 +206,22 @@ def set_tpd_tpp(Norb,tpd,tpp,pds,pdp,pps,ppp):
         
     return tpd_nn_hop_dir, tpd_orbs, tpd_nn_hop_fac, tpp_nn_hop_fac
 
-def set_tz(Norb,tz):                            #条件Ni向下
+def set_tz(Norb,if_tz_exist,tz):                            #条件Ni向下
     if pam.Norb==7:
-        tz_fac ={('px','px'):  tz,\
-                 ('py','py'):  tz,\
-                 ('d3z2r2','d3z2r2'):  1.2*tz,\
-                 ('dx2y2', 'dx2y2'):  tz,\
-                 ('dxy',   'dxy'):  tz}
+        if if_tz_exist == 0: 
+            tz_fac ={('px','px'):  tz,\
+                     ('py','py'):  tz,\
+                     ('d3z2r2','d3z2r2'):  1.2*tz,\
+                     ('dx2y2', 'dx2y2'):  tz,\
+                     ('dxy',   'dxy'):  tz}
+        if if_tz_exist == 1: 
+            tz_fac ={('d3z2r2','d3z2r2'):  1.2*tz,\
+                     ('dx2y2', 'dx2y2'):  tz,\
+                     ('dxy',   'dxy'):  tz}   
+        if if_tz_exist == 2: 
+            tz_fac ={('d3z2r2','d3z2r2'):  1.2*tz}               
+            
+            
     if pam.Norb==9:
         tz_fac ={('px1','px1'):  tz,\
                  ('px2','px2'):  tz,\
@@ -337,7 +346,7 @@ def get_interaction_mat(A, sym):
     if sym=='3B2':
         Stot = 1
         Sz_set = [-1,0,1]
-        AorB_sym = -1
+        AorB_sym = 0
         state_order = {('d3z2r2','dxy'): 0}
         interaction_mat = [[A-8.*B]]
     if sym=='1E':
@@ -622,18 +631,7 @@ def create_tpp_nn_matrix(VS,tpp_nn_hop_fac):
                         
                     tmp_state = vs.create_state(slabel)
                     new_state,ph,_ = vs.make_state_canonical(tmp_state)
-                    #new_state,ph = vs.make_state_canonical_old(tmp_state)
 
-#                     s1n = new_state['hole1_spin']                                                shan
-#                     s2n = new_state['hole2_spin']
-#                     s3n = new_state['hole3_spin']
-#                     orb1n = new_state['hole1_orb']
-#                     orb2n = new_state['hole2_orb']
-#                     orb3n = new_state['hole3_orb']
-#                     x1n, y1n, z1n = new_state['hole1_coord']
-#                     x2n, y2n, z2n = new_state['hole2_coord']
-#                     x3n, y3n, z3n = new_state['hole3_coord']
-                    #print x1,y1,orb1,s1,x2,y2,orb2,s2,'tpp hops to',x1n, y1n,orb1n,s1n,x2n, y2n,orb2n,s2n
 
                     o12 = sorted([orb1, dir_, o1])
                     o12 = tuple(o12)
@@ -1054,16 +1052,16 @@ def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole
             hole1_part = double_part[i][0:5]
             hole2_part = double_part[i][5:10]       
             
-            x1=double_part[i][2]
-            y1=double_part[i][3]            
-            x2=double_part[i][7]
-            y2=double_part[i][8] 
-            x3 = hole34_part[i][2]            
-            y3 = hole34_part[i][3]            
-            x4 = hole34_part[i][7]            
-            y4 = hole34_part[i][8]
-            s3 = hole34_part[i][1]            
-            s4 = hole34_part[i][6]   
+#             x1=double_part[i][2]
+#             y1=double_part[i][3]            
+#             x2=double_part[i][7]
+#             y2=double_part[i][8] 
+#             x3 = hole34_part[i][2]            
+#             y3 = hole34_part[i][3]            
+#             x4 = hole34_part[i][7]            
+#             y4 = hole34_part[i][8]
+#             s3 = hole34_part[i][1]            
+#             s4 = hole34_part[i][6]   
             
             o12 = sorted([o1,o2])
             o12 = tuple(o12)
@@ -1142,7 +1140,7 @@ def create_interaction_matrix_ALL_syms(VS,d_double,p_double,double_part,idx,hole
 
 #                             if o1 in pam.Ni_Cu_orbs and o2 in pam.Ni_Cu_orbs and o3 in pam.Ni_Cu_orbs and o4 in pam.Ni_Cu_orbs:
 # #                                if s1=='up' and o1=='d3z2r2' and x1==y1==z1==0 and s2=='dn' and o2=='d3z2r2' and x2==y2==z2==0:
-#                                 print('slabel',slabel,idx[i],o34,s1,s2)
+#                                 print('slabel',slabel,idx[i],o34,s1,s2,idx1,idx2,val)
 #                                    print('------')
 #                                     print('slabel2',slabel2)
                                     
