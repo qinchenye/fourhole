@@ -6,6 +6,7 @@ Distance (L1-norm) between any two particles(holes) cannot > cutoff Mc
 '''
 import parameters as pam
 import lattice as lat
+import utility as util
 import bisect
 import numpy as np
 
@@ -23,14 +24,7 @@ def create_state(slabel):
     s3 = slabel[10]; orb3 = slabel[11]; x3 = slabel[12]; y3 = slabel[13]; z3 = slabel[14];
     s4 = slabel[15]; orb4 = slabel[16]; x4 = slabel[17]; y4 = slabel[18]; z4 = slabel[19];    
     
-    assert not (((x3,y3,z3))==(x1,y1,z1) and s3==s1 and orb3==orb1)
-    assert not (((x1,y1,z1))==(x2,y2,z2) and s1==s2 and orb1==orb2)
-    assert not (((x3,y3,z3))==(x2,y2,z2) and s3==s2 and orb3==orb2)
-    assert not (((x4,y4,z4))==(x1,y1,z1) and s4==s1 and orb4==orb1)
-    assert not (((x4,y4,z4))==(x2,y2,z2) and s4==s2 and orb4==orb2)
-    assert not (((x4,y4,z4))==(x3,y3,z3) and s4==s3 and orb4==orb3)    
-    
-    assert(check_in_vs_condition1(x1,y1,x2,y2,x3,y3,x4,y4))
+
 
     state = {'hole1_spin' : s1,\
              'hole1_orb'  : orb1,\
@@ -80,15 +74,15 @@ def reorder_state(slabel):
 #             state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
 #             phase = -1.0  
 
-
+     # Changed the order for the basis
     
-    if (x2,y2)<(x1,y1): #and (x2!=0 or y2!=0):
+    if z2>z1: #and (x2!=0 or y2!=0):
         state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
         phase = -1.0
         
     # note that z1 can differ from z2 in the presence of two layers
-    elif (x1,y1)==(x2,y2):     
-        if z1==z2:
+    elif z1==z2:     
+        if (x1,y1)==(x2,y2):
             if s1==s2:
                 o12 = list(sorted([orb1,orb2]))
                 if o12[0]==orb2:
@@ -97,7 +91,7 @@ def reorder_state(slabel):
             elif s1=='dn' and s2=='up':
                 state_label = ['up',orb2,x2,y2,z2,'dn',orb1,x1,y1,z1]
                 phase = -1.0
-        elif z1==0 and z2==1:
+        elif (x2,y2)<(x1,y1):
             state_label = [s2,orb2,x2,y2,z2,s1,orb1,x1,y1,z1]
             phase = -1.0  
 
@@ -258,13 +252,13 @@ def check_in_vs_condition1(x1,y1,x2,y2,x3,y3,x4,y4):
     if calc_manhattan_dist(x1,y1,0,0) > pam.Mc or \
         calc_manhattan_dist(x2,y2,0,0) > pam.Mc or \
         calc_manhattan_dist(x3,y3,0,0) > pam.Mc or \
-        calc_manhattan_dist(x4,y4,0,0) > pam.Mc or \
-        calc_manhattan_dist(x1,y1,x2,y2) > 2*pam.Mc or \
-        calc_manhattan_dist(x1,y1,x3,y3) > 2*pam.Mc or \
-        calc_manhattan_dist(x2,y2,x3,y3) > 2*pam.Mc or \
-        calc_manhattan_dist(x1,y1,x4,y4) > 2*pam.Mc or \
-        calc_manhattan_dist(x2,y2,x4,y4) > 2*pam.Mc or \
-        calc_manhattan_dist(x3,y3,x4,y4) > 2*pam.Mc:
+        calc_manhattan_dist(x4,y4,0,0) > pam.Mc:
+#         calc_manhattan_dist(x1,y1,x2,y2) > 2*pam.Mc or \
+#         calc_manhattan_dist(x1,y1,x3,y3) > 2*pam.Mc or \
+#         calc_manhattan_dist(x2,y2,x3,y3) > 2*pam.Mc or \
+#         calc_manhattan_dist(x1,y1,x4,y4) > 2*pam.Mc or \
+#         calc_manhattan_dist(x2,y2,x4,y4) > 2*pam.Mc or \
+#         calc_manhattan_dist(x3,y3,x4,y4) > 2*pam.Mc:
         return False 
     else:
         return True
@@ -297,6 +291,10 @@ def exist_d6_d7_state(o1,o2,o3,o4,z1,z2,z3,z4):
         return False     
     else:
         return True
+    
+    
+    
+    
     
 class VariationalSpace:
     '''
@@ -372,7 +370,7 @@ class VariationalSpace:
         for ux in range(-Mc,Mc+1):
             Bu = Mc - abs(ux)
             for uy in range(-Bu,Bu+1):
-                for uz in [0,1]:
+                for uz in [0,1,2]:
                     orb1s = lat.get_unit_cell_rep(ux,uy,uz)
                     if orb1s==['NotOnSublattice']:
                         continue
@@ -380,7 +378,7 @@ class VariationalSpace:
                     for vx in range(-Mc,Mc+1):
                         Bv = Mc - abs(vx)
                         for vy in range(-Bv,Bv+1):
-                            for vz in [0,1]:
+                            for vz in [0,1,2]:
                                 orb2s = lat.get_unit_cell_rep(vx,vy,vz)
                                 if orb2s==['NotOnSublattice']:
                                     continue
@@ -390,7 +388,7 @@ class VariationalSpace:
                                 for tx in range(-Mc,Mc+1):
                                     Bt = Mc - abs(tx)
                                     for ty in range(-Bt,Bt+1):
-                                        for tz in [0,1]:
+                                        for tz in [0,1,2]:
                                             orb3s = lat.get_unit_cell_rep(tx,ty,tz)
                                             if orb3s==['NotOnSublattice'] :
                                                 continue
@@ -398,51 +396,59 @@ class VariationalSpace:
                                             for wx in range(-Mc,Mc+1):
                                                 Bw = Mc - abs(wx)
                                                 for wy in range(-Bw,Bw+1):
-                                                    for wz in [0,1]:
+                                                    for wz in [0,1,2]:
                                                         orb4s = lat.get_unit_cell_rep(wx,wy,wz)
                                                         if orb4s==['NotOnSublattice'] :
                                                             continue                
                                                         if not check_in_vs_condition1(ux,uy,vx,vy,tx,ty,wx,wy):
                                                             continue
 
+                                                        #the function is used to decrease the for circulation
+                                                        funlist = [util.lamlist(orb1s, orb2s, orb3s,orb4s)]
+                                                        for f1 in funlist[0]:
+                                                            orb1, orb2, orb3,orb4 = f1()
+                                                            funlist2 = [util.lamlist(['up','dn'], ['up','dn'], \
+                                                                             ['up','dn'],['up','dn'])]
+                                                            for f2 in funlist2[0]:
+                                                                s1, s2, s3,s4 = f2()
 
-                                                        for orb1 in orb1s:
-                                                            for orb2 in orb2s:
-                                                                for orb3 in orb3s:
-                                                                    for orb4 in orb4s:
-                                                                        for s1 in ['up','dn']:
-                                                                            for s2 in ['up','dn']:   
-                                                                                for s3 in ['up','dn']:
-                                                                                    for s4 in ['up','dn']:
-                                                                                        # assume two holes from undoped d9d9 is up-dn
-                                                                                        if pam.reduce_VS==1:
-                                                                                            sss = sorted([s1,s2,s3,s4])
-                                                                                            if sss!=['dn','dn','up','up']:
-                                                                                                continue
+                                                                # assume two holes from undoped d9d9 is up-dn
+                                                                if pam.reduce_VS==1:
+                                                                    sss = sorted([s1,s2,s3,s4])
+                                                                    if sss!=['dn','dn','up','up']:
+                                                                        continue
 
-                                                                                        # neglect d7 state !!
-                                                                                        if not exist_d6_d7_state\
-                                                                                             (orb1,orb2,orb3,orb4,uz,vz,tz,wz):
-                                                                                            continue 
+                                                                # neglect d7 state !!
+                                                                if not exist_d6_d7_state\
+                                                                     (orb1,orb2,orb3,orb4,uz,vz,tz,wz):
+                                                                    continue 
+                                                                    
 
-                                                                                        # consider Pauli principle
-                                                                                        slabel = [s1,orb1,ux,uy,uz,\
-                                                                                                  s2,orb2,vx,vy,vz,\
-                                                                                                  s3,orb3,tx,ty,tz,\
-                                                                                                  s4,orb4,wx,wy,wz]
-                                                                                        if not check_Pauli(slabel):
-                                                                                            continue  
+                                                                # consider Pauli principle
+                                                                slabel = [s1,orb1,ux,uy,uz,\
+                                                                          s2,orb2,vx,vy,vz,\
+                                                                          s3,orb3,tx,ty,tz,\
+                                                                          s4,orb4,wx,wy,wz]
+                                                                if not check_Pauli(slabel):
+                                                                    continue  
 
-                                                                                        # skip states with 4 holes on single layer
+                                                                # skip states with 4 holes on single layer
 #                                                                                         if uz==vz==tz==wz:
 #                                                                                             continue
-                                                                                            
-                                                                                        state = create_state(slabel)
-                                                                                        canonical_state,_,_ = make_state_canonical(state)
 
-                                                                                        if self.filter_func(canonical_state):
-                                                                                            uid = self.get_uid(canonical_state)
-                                                                                            lookup_tbl.append(uid)
+                                                                state = create_state(slabel)
+                                                                canonical_state,_,_ = make_state_canonical(state)
+        
+        
+                                                                # At most, there are only 2 holes in H
+#                                                                 _, _, _, _,_, _,H_layer, N_H,H_i =\
+#                                                                     util.get_NiCu_layer_orbs(state) 
+#                                                                 if N_H==3 or N_H==4:
+#                                                                     continue 
+                        
+                                                                if self.filter_func(canonical_state):
+                                                                    uid = self.get_uid(canonical_state)
+                                                                    lookup_tbl.append(uid)
 
 
         lookup_tbl = list(set(lookup_tbl)) # remove duplicates
@@ -544,7 +550,7 @@ class VariationalSpace:
         o3 = lat.orb_int[orb3]
         o4 = lat.orb_int[orb4]        
 
-        uid =i1 + 2*i2 +4*i3 + 8*i4 +16*z1 +32*z2 +64*z3 +128*z4 +256*o1 +256*N*o2 +256*N2*o3 +256*N3*o4 + 256*N4*( (y1+s) + (x1+s)*B1 + (y2+s)*B2 + (x2+s)*B3 + (y3+s)*B4 + (x3+s)*B5 + (y4+s)*B6 + (x4+s)*B7)
+        uid =i1 + 2*i2 +4*i3 + 8*i4 +16*z1 +48*z2 +144*z3 +432*z4 +1296*o1 +1296*N*o2 +1296*N2*o3 +1296*N3*o4 + 1296*N4*( (y1+s) + (x1+s)*B1 + (y2+s)*B2 + (x2+s)*B3 + (y3+s)*B4 + (x3+s)*B5 + (y4+s)*B6 + (x4+s)*B7)
 
         # check if uid maps back to the original state, namely uid's uniqueness
         tstate = self.get_state(uid)
@@ -583,36 +589,36 @@ class VariationalSpace:
         N3 = N2*N
         N4 = N3*N
         
-        x4 = int(uid/(256*N4*B7))- s 
-        uid_ = uid % (256*N4*B7)
-        y4 = int(uid_/(256*N4*B6))- s 
-        uid_ = uid_ % (256*N4*B6) 
-        x3 = int(uid_/(256*N4*B5))- s 
-        uid_ = uid_ % (256*N4*B5)
-        y3 = int(uid_/(256*N4*B4))- s 
-        uid_ = uid_ % (256*N4*B4) 
-        x2 = int(uid_/(256*N4*B3))- s 
-        uid_ = uid_ % (256*N4*B3)
-        y2 = int(uid_/(256*N4*B2))- s  
-        uid_ = uid_ % (256*N4*B2)
-        x1 = int(uid_/(256*N4*B1))- s 
-        uid_ = uid_ % (256*N4*B1)
-        y1 = int(uid_/(256*N4)) - s
-        uid_ = uid_ % (256*N4)
-        o4 = int(uid_/(256*N3))
-        uid_ = uid_ % (256*N3)        
-        o3 = int(uid_/(256*N2))
-        uid_ = uid_ % (256*N2)
-        o2 = int(uid_/(256*N))
-        uid_ = uid_ % (256*N)
-        o1 = int(uid_/256)
-        uid_ = uid_ % 256
-        z4 = int(uid_/128)
-        uid_ = uid_ % 128        
-        z3 = int(uid_/64)
-        uid_ = uid_ % 64
-        z2 = int( uid_/32)
-        uid_ = uid_ % 32
+        x4 = int(uid/(1296*N4*B7))- s 
+        uid_ = uid % (1296*N4*B7)
+        y4 = int(uid_/(1296*N4*B6))- s 
+        uid_ = uid_ % (1296*N4*B6) 
+        x3 = int(uid_/(1296*N4*B5))- s 
+        uid_ = uid_ % (1296*N4*B5)
+        y3 = int(uid_/(1296*N4*B4))- s 
+        uid_ = uid_ % (1296*N4*B4) 
+        x2 = int(uid_/(1296*N4*B3))- s 
+        uid_ = uid_ % (1296*N4*B3)
+        y2 = int(uid_/(1296*N4*B2))- s  
+        uid_ = uid_ % (1296*N4*B2)
+        x1 = int(uid_/(1296*N4*B1))- s 
+        uid_ = uid_ % (1296*N4*B1)
+        y1 = int(uid_/(1296*N4)) - s
+        uid_ = uid_ % (1296*N4)
+        o4 = int(uid_/(1296*N3))
+        uid_ = uid_ % (1296*N3)        
+        o3 = int(uid_/(1296*N2))
+        uid_ = uid_ % (1296*N2)
+        o2 = int(uid_/(1296*N))
+        uid_ = uid_ % (1296*N)
+        o1 = int(uid_/1296)
+        uid_ = uid_ % 1296
+        z4 = int(uid_/432)
+        uid_ = uid_ % 432        
+        z3 = int(uid_/144)
+        uid_ = uid_ % 144
+        z2 = int( uid_/48)
+        uid_ = uid_ % 48
         z1 = int(uid_/16)
         uid_ = uid_ % 16
         i4 = int(uid_/8)

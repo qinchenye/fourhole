@@ -95,16 +95,20 @@ def create_singlet_triplet_basis_change_matrix_d_double(VS, d_double, double_par
             ts1 = tstate['hole1_spin']
             ts2 = tstate['hole2_spin']
             ts3 = tstate['hole3_spin']
-            ts4 = tstate['hole4_spin']            
+            ts4 = tstate['hole4_spin'] 
+            ts5 = tstate['hole5_spin']             
             torb1 = tstate['hole1_orb']
             torb2 = tstate['hole2_orb']
             torb3 = tstate['hole3_orb']
-            torb4 = tstate['hole4_orb']            
+            torb4 = tstate['hole4_orb'] 
+            torb5 = tstate['hole5_orb']             
             tx1, ty1, tz1 = tstate['hole1_coord']
             tx2, ty2, tz2 = tstate['hole2_coord']
             tx3, ty3, tz3 = tstate['hole3_coord']
-            tx4, ty4, tz4 = tstate['hole4_coord']            
-            print ('Error state', double_id,ts1,torb1,tx1,ty1,tz1,ts2,torb2,tx2,ty2,tz2,ts3,torb3,tx3,ty3,tz3,ts4,torb4,tx4,ty4,tz4)
+            tx4, ty4, tz4 = tstate['hole4_coord']   
+            tx5, ty5, tz5 = tstate['hole5_coord']               
+            print ('Error state', double_id,ts1,torb1,tx1,ty1,tz1,ts2,torb2,tx2,ty2,tz2,ts3,torb3,tx3,ty3,tz3,ts4,torb4,tx4,ty4,tz4,\
+                   ts5,torb5,tx5,ty5,tz5)
             break
 
         elif s1=='up' and s2=='dn':
@@ -182,7 +186,7 @@ def create_singlet_triplet_basis_change_matrix_d_double(VS, d_double, double_par
 
 
 
-def find_singlet_triplet_partner(VS, Ni_layer, Cu_layer, NiorCu, i, Ni_i, Cu_i):
+def find_singlet_triplet_partner(VS, Ni_layer, Cu_layer, NiorCu, i, Ni_i, Cu_i,apz_layer, apz_i):
     '''
     For a given state (composed of Ni and Cu layer states) 
     find its partner state for each layer separately to form a singlet/triplet 
@@ -204,33 +208,35 @@ def find_singlet_triplet_partner(VS, Ni_layer, Cu_layer, NiorCu, i, Ni_i, Cu_i):
     
     if NiorCu=='Ni':
 #         print (Ni_i)
+        mix_layer= apz_layer + Cu_layer
         if Ni_i== [0,1]:   
-            slabel = [Ni_layer[5]]+ Ni_layer[1:5]+ [Ni_layer[0]]+ Ni_layer[6:10]+ Cu_layer
+            slabel = [Ni_layer[5]]+ Ni_layer[1:5]+ [Ni_layer[0]]+ Ni_layer[6:10]+ mix_layer
         elif Ni_i==[0,2] :  
-            slabel = [Ni_layer[5]]+ Ni_layer[1:5]+ Cu_layer[0:5] + [Ni_layer[0]]+ Ni_layer[6:10]+ Cu_layer[5:10]            
+            slabel = [Ni_layer[5]]+ Ni_layer[1:5]+ mix_layer[0:5] + [Ni_layer[0]]+ Ni_layer[6:10]+ mix_layer[5:10]            
         elif Ni_i==[0,3] :  
-            slabel = [Ni_layer[5]]+ Ni_layer[1:5]+ Cu_layer + [Ni_layer[0]]+ Ni_layer[6:10] 
+            slabel = [Ni_layer[5]]+ Ni_layer[1:5]+ mix_layer + [Ni_layer[0]]+ Ni_layer[6:10] 
         elif Ni_i==[1,2] :  
-            slabel = Cu_layer[0:5]+ [Ni_layer[5]]+ Ni_layer[1:5]+  [Ni_layer[0]]+ Ni_layer[6:10]+ Cu_layer[5:10] 
+            slabel = mix_layer[0:5]+ [Ni_layer[5]]+ Ni_layer[1:5]+  [Ni_layer[0]]+ Ni_layer[6:10]+ mix_layer[5:10] 
         elif Ni_i==[1,3] :  
-            slabel = Cu_layer[0:5]+ [Ni_layer[5]]+ Ni_layer[1:5]+ Cu_layer[5:10]+ [Ni_layer[0]]+ Ni_layer[6:10]
+            slabel = mix_layer[0:5]+ [Ni_layer[5]]+ Ni_layer[1:5]+ mix_layer[5:10]+ [Ni_layer[0]]+ Ni_layer[6:10]
         elif Ni_i==[2,3] :  
-            slabel = Cu_layer+ [Ni_layer[5]]+ Ni_layer[1:5]+ [Ni_layer[0]]+ Ni_layer[6:10]            
+            slabel = mix_layer+ [Ni_layer[5]]+ Ni_layer[1:5]+ [Ni_layer[0]]+ Ni_layer[6:10]            
             
     elif NiorCu=='Cu':
 #         print (Cu_i)
+        mix_layer= Ni_layer + apz_layer
         if Cu_i== [0,1]:  
-            slabel = [Cu_layer[5]]+ Cu_layer[1:5]+ [Cu_layer[0]]+ Cu_layer[6:10]+ Ni_layer
+            slabel = [Cu_layer[5]]+ Cu_layer[1:5]+ [Cu_layer[0]]+ Cu_layer[6:10]+ mix_layer
         elif Cu_i==[0,2] :  
-            slabel = [Cu_layer[5]]+ Cu_layer[1:5]+ Ni_layer[0:5] + [Cu_layer[0]]+ Cu_layer[6:10]+ Ni_layer[5:10]            
+            slabel = [Cu_layer[5]]+ Cu_layer[1:5]+ mix_layer[0:5] + [Cu_layer[0]]+ Cu_layer[6:10]+ mix_layer[5:10]            
         elif Cu_i==[0,3] : 
-            slabel = [Cu_layer[5]]+ Cu_layer[1:5]+ Ni_layer + [Cu_layer[0]]+ Cu_layer[6:10] 
+            slabel = [Cu_layer[5]]+ Cu_layer[1:5]+ mix_layer + [Cu_layer[0]]+ Cu_layer[6:10] 
         elif Cu_i==[1,2] : 
-            slabel = Ni_layer[0:5]+ [Cu_layer[5]]+ Cu_layer[1:5]+  [Cu_layer[0]]+ Cu_layer[6:10]+ Ni_layer[5:10] 
+            slabel = mix_layer[0:5]+ [Cu_layer[5]]+ Cu_layer[1:5]+  [Cu_layer[0]]+ Cu_layer[6:10]+ mix_layer[5:10] 
         elif Cu_i==[1,3] :  
-            slabel = Ni_layer[0:5]+ [Cu_layer[5]]+ Cu_layer[1:5]+ Ni_layer[5:10]+ [Cu_layer[0]]+ Cu_layer[6:10]
+            slabel =mix_layer[0:5]+ [Cu_layer[5]]+ Cu_layer[1:5]+ mix_layer[5:10]+ [Cu_layer[0]]+ Cu_layer[6:10]
         elif Cu_i==[2,3] :  
-            slabel = Ni_layer+ [Cu_layer[5]]+ Cu_layer[1:5]+ [Cu_layer[0]]+ Cu_layer[6:10]   
+            slabel =mix_layer+ [Cu_layer[5]]+ Cu_layer[1:5]+ [Cu_layer[0]]+ Cu_layer[6:10]   
         
     #print(slabel)
     tmp_state = vs.create_state(slabel)
@@ -294,18 +300,25 @@ def create_singlet_triplet_basis_change_matrix(VS, double_part, idx, hole34_part
         x4, y4, z4 = start_state['hole4_coord']          
         
         
-
         if NiorCu=='Ni':
             d_double = d_Ni_double
+                 
+
+ 
+        # N_u means holes stay in Ni layer and N_d means holes stay in Cu layer
+    
         if NiorCu=='Cu':
             d_double = d_Cu_double    
 
+            
         # get states in Ni and Cu layers separately and how many orbs
-        Ni_layer, N_Ni, Cu_layer, N_Cu, Ni_i, Cu_i = util.get_NiCu_layer_orbs(start_state)
+        Ni_layer, N_Ni, Cu_layer, N_Cu, Ni_i, Cu_i,apz_layer, N_H,apz_i = util.get_NiCu_layer_orbs(start_state)
 
-        if (not (N_Ni==2 and N_Cu==2)) and (i not in d_double):
-            data.append(np.sqrt(2.0)); row.append(i); col.append(i)  
-#             print (s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2,s3,orb3,x3,y3,z3,s4,orb4,x4,y4,z4)            
+        
+        # calculate singlet or triplet only if the layer exist two holes        
+        if (not ((N_Ni== 2 and NiorCu=='Ni') or (N_Cu== 2 and NiorCu=='Cu'))) and (i not in d_double):
+#         if i not in d_double:            
+            data.append(np.sqrt(2.0)); row.append(i); col.append(i)         
         
         elif i not in count_list:
             if i in d_double:
@@ -319,7 +332,7 @@ def create_singlet_triplet_basis_change_matrix(VS, double_part, idx, hole34_part
                 o2 = double_part[i2][6]          
                 dpos = double_part[i2][2:5]
             else:
-                j, ph = find_singlet_triplet_partner(VS, Ni_layer, Cu_layer, NiorCu,i, Ni_i, Cu_i)
+                j, ph = find_singlet_triplet_partner(VS, Ni_layer, Cu_layer, NiorCu,i, Ni_i, Cu_i,H_layer, H_i)
 #                 print(i,s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2,s3,orb3,x3,y3,z3,s4,orb4,x4,y4,z4,ph) 
                 
                 if NiorCu=='Ni':
@@ -424,6 +437,87 @@ def create_singlet_triplet_basis_change_matrix(VS, double_part, idx, hole34_part
   
 
     return sps.coo_matrix((data,(row,col)),shape=(VS.dim,VS.dim))/np.sqrt(2.0), S_val, Sz_val, AorB_sym
+
+
+def create_bonding_anti_bonding_basis_change_matrix(VS):
+    
+    dim = VS.dim
+    data = []
+    row = []
+    col = []   
+    
+    bonding_val = np.zeros(VS.dim, dtype=int)    
+    
+    # store index of partner state to avoid double counting
+    # otherwise, when arriving at i's partner j, its partner would be i
+    count_list = []    
+    
+    for i in range(0,VS.dim):
+        start_state = VS.get_state(VS.lookup_tbl[i])
+        s1 = start_state['hole1_spin']
+        s2 = start_state['hole2_spin']
+        s3 = start_state['hole3_spin']
+        s4 = start_state['hole4_spin']            
+        orb1 = start_state['hole1_orb']
+        orb2 = start_state['hole2_orb']
+        orb3 = start_state['hole3_orb']
+        orb4 = start_state['hole4_orb']       
+        x1, y1, z1 = start_state['hole1_coord']
+        x2, y2, z2 = start_state['hole2_coord']          
+        x3, y3, z3 = start_state['hole3_coord']
+        x4, y4, z4 = start_state['hole4_coord']          
+        
+        slabel = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2,s3,orb3,x3,y3,z3,s4,orb4,x4,y4,z4]
+
+        
+        #Two layers of Cu and Ni exchange position and when z=1 in apz orb,it's still itself
+        
+        slabel2 = [s1,orb1,x1,y1,2-z1,s2,orb2,x2,y2,2-z2,s3,orb3,x3,y3,2-z3,s4,orb4,x4,y4,2-z4]
+        tmp_state = vs.create_state(slabel2)
+        partner_state,phase,_ = vs.make_state_canonical(tmp_state)      
+#         print (phase)
+        j = VS.get_index(partner_state)        
+        
+        if j==i:
+            data.append(np.sqrt(2.0)); row.append(i); col.append(i)
+            bonding_val[i] = 0 
+        else:
+#             start_state2 = VS.get_state(VS.lookup_tbl[i])
+#             s1 = start_state2['hole1_spin']
+#             s2 = start_state2['hole2_spin']
+#             s3 = start_state2['hole3_spin']
+#             s4 = start_state2['hole4_spin']            
+#             orb1 = start_state2['hole1_orb']
+#             orb2 = start_state2['hole2_orb']
+#             orb3 = start_state2['hole3_orb']
+#             orb4 = start_state2['hole4_orb']       
+#             x1, y1, z1 = start_state2['hole1_coord']
+#             x2, y2, z2 = start_state2['hole2_coord']          
+#             x3, y3, z3 = start_state2['hole3_coord']
+#             x4, y4, z4 = start_state2['hole4_coord'] 
+            
+#             start_state3 = VS.get_state(VS.lookup_tbl[j]) 
+#             if orb1=='d3z2r2' and orb2=='dx2y2' and orb3=='d3z2r2' and orb4=='dx2y2':
+#                 print (start_state2)
+#                 print (start_state3)            
+            if i not in count_list:
+                # append matrix elements for bonding
+                # convention: original state col i stores bonding and 
+                #             partner state col j stores anti-bonding
+                data.append(1.0);  row.append(i); col.append(i)
+                data.append(phase);  row.append(j); col.append(i)
+                bonding_val[i] = 1          
+
+
+                # append matrix elements for anti-bonding
+                data.append(1.0);  row.append(i); col.append(j)
+                data.append(-phase);   row.append(j); col.append(j)
+                bonding_val[j] = -1
+
+
+                count_list.append(j)
+
+    return sps.coo_matrix((data,(row,col)),shape=(VS.dim,VS.dim))/np.sqrt(2.0), bonding_val       
 
 # def print_VS_after_basis_change(VS,S_val,Sz_val):
 #     print ('print_VS_after_basis_change:')

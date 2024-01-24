@@ -209,7 +209,7 @@ def set_tpd_tpp(Norb,tpd,tpp,pds,pdp,pps,ppp):
 
 
 def set_tapzd(Norb,tapzd): 
-    if pam.Norb==5:    
+    if pam.Norb==5 or pam.Norb==8:    
         tapzd_nn_hop_dir = {'d3z2r2': ['T','B'],\
                           'apz': ['T','B']}
 
@@ -1096,6 +1096,16 @@ def create_edep_diag_matrix(VS,ANi,ACu,epNi,epCu,epbilayer):
         diag_el += util.get_orb_edep(orb2,z2,epCu,epNi,epbilayer)
         diag_el += util.get_orb_edep(orb3,z3,epCu,epNi,epbilayer)
         diag_el += util.get_orb_edep(orb4,z4,epCu,epNi,epbilayer)    
+        Ni_i,Cu_i = util.get_Number_NiCu(state)
+        if Ni_i == 1:
+            diag_el +=3*ANi/2 
+        if Cu_i == 1:
+            diag_el +=3*ACu/2   
+        if Ni_i == 0:
+            diag_el +=2*ANi
+        if Cu_i == 0:
+            diag_el +=2*ACu              
+            
 
         data.append(diag_el); row.append(i); col.append(i)
 #         print (i, diag_el)
@@ -1377,7 +1387,7 @@ def create_interaction_matrix_ALL_syms(VS,d_double,p_double,apz_double,double_pa
             data.append(Upp); row.append(i); col.append(i)
     if Uss!=0:
         for i in apz_double:
-            data.append(Upp); row.append(i); col.append(i)            
+            data.append(Uss); row.append(i); col.append(i)            
             
 
     row = np.array(row)
