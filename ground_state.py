@@ -158,7 +158,8 @@ def get_ground_state(matrix, VS, S_Ni_val, Sz_Ni_val, S_Cu_val, Sz_Cu_val,bondin
     wgt_ddsp = np.zeros(50)           
     wgt_dssp = np.zeros(50)         
     wgt_dspp = np.zeros(50)    
-    wgt_ddds = np.zeros(50)               
+    wgt_ddds = np.zeros(50)    
+
 
     wgt_a1= np.zeros(10)   
     wgt_b1= np.zeros(10)       
@@ -258,7 +259,7 @@ def get_ground_state(matrix, VS, S_Ni_val, Sz_Ni_val, S_Cu_val, Sz_Cu_val,bondin
                 sumweight1=sumweight1+abs(vecs[i,k])**2
                 print (' state ', istate, ' ',orb1,s1,x1,y1,z1,' ',orb2,s2,x2,y2,z2,' ',orb3,s3,x3,y3,z3,' ',orb4,s4,x4,y4,z4,\
                    '\n S_Ni=', S_Ni_12, ',  Sz_Ni=', Sz_Ni_12, \
-                   ',  S_Cu=', S_Cu_12, ',  Sz_Cu=', Sz_Cu_12, \
+                   ',  S_Cu=', S_Cu_12, ',  Sz_Cu=', Sz_Cu_12,  ',  bonding=', bonding,\
                    ", weight = ", weight,'\n')   
 
 
@@ -1252,8 +1253,12 @@ def get_ground_state(matrix, VS, S_Ni_val, Sz_Ni_val, S_Cu_val, Sz_Cu_val,bondin
     txt.close()         
     txt=open('./data/O','a')                                  
     txt.write(str(wgt_O[0]/number)+'\n')
+    txt.close()        
+    
+    
+    txt=open('./data/val','a')                                  
+    txt.write(str(vals[0])+'\n')
     txt.close()            
-        
         
     txt=open('./data/LmLn','a')                                  
     txt.write(str(wgt_LmLn[0]/number)+'\n')

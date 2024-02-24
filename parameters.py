@@ -2,7 +2,7 @@ import math
 import numpy as np
 M_PI = math.pi
 
-Mc = 2
+Mc =2
 
 # Note that Ni-d and O-p orbitals use hole language
 # while Nd orbs use electron language
@@ -31,12 +31,12 @@ epNis = np.arange(1.86, 1.861, 1.0)
 epbilayers = epNis
 
 # 29.5GPa:
-epNis = np.arange(6.8, 6.81, 1.0)
+epNis = np.arange(3.23, 3.231, 1.0)
 
 epCus = epNis
 
 # 29.5GPa:
-epbilayers = np.arange(6.0, 6.01, 1.0)
+epbilayers = np.arange(2.42, 2.421, 1.0)
 
 ANis = np.arange(6.0, 6.01, 1.0)
 ACus = ANis
@@ -62,7 +62,7 @@ if Norb==8 or Norb==5:
 #     tpds = [0.01]
 
     # 29.5GPa:
-    tpds = np.linspace(1.58, 1.58, num=1, endpoint=True) #[0.25]
+    tpds = np.linspace(4.2, 4.2, num=1, endpoint=True) #[0.25]
 
     tpps = [0.55]
 
@@ -70,15 +70,17 @@ if Norb==8 or Norb==5:
     tpps = [0.35]
     
     
-    tapzds = np.linspace(1.66, 1.66, num=1, endpoint=True)
-
+    tapzds = np.linspace(0.0, 0.0, num=1, endpoint=True)
+    tapzps = np.linspace(0.0, 0.0, num=1, endpoint=True)
     tz_a1a1 = 0.028
 
     # 29.5GPa:
     tz_a1a1 = 0.044
 
     tz_b1b1 = 0.047
-    
+#     tz_a1a1 = 0.0
+
+#     tz_b1b1 = 0.0   
 
 elif Norb==10 or Norb==12:    
     # pdp = sqrt(3)/4*pds so that tpd(b2)=tpd(b1)/2: see Eskes's thesis and 1990 paper
@@ -169,7 +171,7 @@ orbs = Ni_Cu_orbs + O_orbs + Obilayer_orbs
 #assert(len(orbs)==Norb)
 
 Upps = [0]
-Usss = [100]
+Usss = [4]
 symmetries = ['1A1','3B1','3B1','1A2','3A2','1E','3E']
 print ("compute A(w) for symmetries = ",symmetries)
 

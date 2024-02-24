@@ -208,7 +208,7 @@ def set_tpd_tpp(Norb,tpd,tpp,pds,pdp,pps,ppp):
     return tpd_nn_hop_dir, tpd_orbs, tpd_nn_hop_fac, tpp_nn_hop_fac
 
 
-def set_tapzd(Norb,tapzd): 
+def set_tapzd_tapzp(Norb,tapzd,tapzp): 
     if pam.Norb==5 or pam.Norb==8:    
         tapzd_nn_hop_dir = {'d3z2r2': ['T','B'],\
                           'apz': ['T','B']}
@@ -220,8 +220,32 @@ def set_tapzd(Norb,tapzd):
                           ('apz','B','d3z2r2'): -tapzd,\
                           ('apz','T','d3z2r2'): tapzd}
 
-                      
-    return tapzd_nn_hop_dir, tapzd_orbs, tapzd_nn_hop_fac
+        tapzp_nn_hop_dir = {'px': ['pzL','pzR','mzL','mzR'],\
+                          'py': ['pzU','pzD','mzU','mzD'],\
+                          'apz': ['pzL','pzR','mzL','mzR','pzU','pzD','mzU','mzD']}
+
+        tapzp_orbs = {'px','py','apz'}
+        tapzp_nn_hop_fac = {('px','pzL','apz'): tapzp,\
+                          ('px','pzR','apz'): -tapzp,\
+                          ('px','mzL','apz'): -tapzp,\
+                          ('px','mzR','apz'): tapzp,\
+                          ('py','pzU','apz'): -tapzp,\
+                          ('py','pzD','apz'): tapzp,\
+                          ('py','mzU','apz'): tapzp,\
+                          ('py','mzD','apz'): -tapzp,\
+                            
+                            
+                            
+                          # below just inverse dir of the above one by one
+                          ('apz','mzR','px'): tapzp,\
+                          ('apz','mzL','px'): -tapzp,\
+                          ('apz','pzR','px'): -tapzp,\
+                          ('apz','pzL','px'): tapzp,\
+                          ('apz','mzD','py'): -tapzp,\
+                          ('apz','mzU','py'): tapzp,\
+                          ('apz','pzD','py'): tapzp,\
+                          ('apz','pzU','py'): -tapzp}                      
+    return tapzd_nn_hop_dir, tapzd_orbs, tapzd_nn_hop_fac, tapzp_nn_hop_dir, tapzp_orbs, tapzp_nn_hop_fac
     
 
 def set_tz(Norb,if_tz_exist,tz_a1a1,tz_b1b1):                            #条件Ni向下
@@ -1064,6 +1088,175 @@ def create_tapzd_nn_matrix(VS, tapzd_nn_hop_dir, tapzd_orbs, tapzd_nn_hop_fac):
     
     return out
 
+def create_tapzp_nn_matrix(VS, tapzp_nn_hop_dir, tapzp_orbs, tapzp_nn_hop_fac):
+    '''
+    Create nearest neighbor (NN) pd hopping part of the Hamiltonian
+    Only hole can hop with tapzp
+
+    Parameters
+    ----------
+    VS: VariationalSpace class from the module variationalSpace
+    
+    Returns
+    -------
+    matrix: (sps coo format) t_pd hopping part of the Hamiltonian without 
+        the prefactor t_pd.
+    
+    Note from the sps documentation
+    -------------------------------
+    By default when converting to CSR or CSC format, duplicate (i,j)
+    entries will be summed together
+    '''    
+    print ("start create_tapzp_nn_matrix")
+    print ("==========================")
+    
+    dim = VS.dim
+    tapzp_keys = tapzp_nn_hop_fac.keys()
+    data = []
+    row = []
+    col = []
+    for i in range(0,dim):
+        start_state = VS.get_state(VS.lookup_tbl[i])
+        
+        # double check which cost some time, might not necessary
+        assert VS.get_uid(start_state) == VS.lookup_tbl[i]
+        
+        s1 = start_state['hole1_spin']
+        s2 = start_state['hole2_spin']
+        s3 = start_state['hole3_spin']
+        s4 = start_state['hole4_spin']           
+        orb1 = start_state['hole1_orb']
+        orb2 = start_state['hole2_orb']
+        orb3 = start_state['hole3_orb']
+        orb4 = start_state['hole4_orb']         
+        x1, y1, z1 = start_state['hole1_coord']
+        x2, y2, z2 = start_state['hole2_coord']
+        x3, y3, z3 = start_state['hole3_coord']   
+        x4, y4, z4 = start_state['hole4_coord']           
+
+        # hole 1 hops: some d-orbitals might have no tapzp
+        if orb1 in tapzp_orbs:
+            for dir_ in tapzp_nn_hop_dir[orb1]:
+                vx, vy, vz = directions_to_vecs[dir_]
+                orbs1 = lat.get_unit_cell_rep(x1+vx, y1+vy, z1+vz)
+                if orbs1 == ['NotOnSublattice']:
+                    continue
+
+                if not vs.check_in_vs_condition1(x1+vx,y1+vy,x2,y2,x3,y3,x4,y4):
+                    continue
+
+                # consider t_pd for all cases; when up hole hops, dn hole should not change orb
+                for o1 in orbs1:
+                    if o1 not in tapzp_orbs:
+                        continue
+                        
+                    # consider Pauli principle
+                    slabel = [s1,o1,x1+vx,y1+vy,z1+vz,s2,orb2,x2,y2,z2,s3,orb3,x3,y3,z3,s4,orb4,x4,y4,z4]  
+                    if not vs.check_Pauli(slabel):
+                        continue 
+                        
+                    tmp_state = vs.create_state(slabel)
+                    new_state,ph,_ = vs.make_state_canonical(tmp_state)
+                    #new_state,ph = vs.make_state_canonical_old(tmp_state)
+
+                    o12 = tuple([orb1, dir_, o1])
+                    if o12 in tapzp_keys:
+                        set_matrix_element(row,col,data,new_state,i,VS,tapzp_nn_hop_fac[o12]*ph)
+
+        # hole 2 hops; some d-orbitals might have no tapzp
+        if orb2 in tapzp_orbs:
+            for dir_ in tapzp_nn_hop_dir[orb2]:
+                vx, vy, vz = directions_to_vecs[dir_]
+                orbs2 = lat.get_unit_cell_rep(x2+vx, y2+vy, z2+vz)
+                if orbs2 == ['NotOnSublattice']:
+                    continue
+
+                if not vs.check_in_vs_condition1(x1,y1,x2+vx,y2+vy,x3,y3,x4,y4):
+                    continue
+
+                for o2 in orbs2:
+                    if o2 not in tapzp_orbs:
+                        continue
+                        
+                    # consider Pauli principle
+                    slabel = [s1,orb1,x1,y1,z1,s2,o2,x2+vx,y2+vy,z2+vz,s3,orb3,x3,y3,z3,s4,orb4,x4,y4,z4]
+                    if not vs.check_Pauli(slabel):
+                        continue 
+                        
+                    tmp_state = vs.create_state(slabel)
+                    new_state,ph,_ = vs.make_state_canonical(tmp_state)
+                    #new_state,ph = vs.make_state_canonical_old(tmp_state)
+
+                    o12 = tuple([orb2, dir_, o2])
+                    if o12 in tapzp_keys:
+                        set_matrix_element(row,col,data,new_state,i,VS,tapzp_nn_hop_fac[o12]*ph)
+
+        if orb3 in tapzp_orbs:
+            for dir_ in tapzp_nn_hop_dir[orb3]:
+                vx, vy, vz = directions_to_vecs[dir_]
+                orbs3 = lat.get_unit_cell_rep(x3+vx, y3+vy, z3+vz)
+                if orbs3 == ['NotOnSublattice']:
+                    continue
+
+                if not vs.check_in_vs_condition1(x1,y1,x2,y2,x3+vx,y3+vy,x4,y4):
+                    continue
+
+                for o3 in orbs3:
+                    if o3 not in tapzp_orbs:
+                        continue
+                        
+                    # consider Pauli principle                   
+                    slabel = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2,s3,o3,x3+vx,y3+vy,z3+vz,s4,orb4,x4,y4,z4]
+                    if not vs.check_Pauli(slabel):
+                        continue 
+                        
+                    tmp_state = vs.create_state(slabel)
+                    new_state,ph,_ = vs.make_state_canonical(tmp_state)
+                    #new_state,ph = vs.make_state_canonical_old(tmp_state)
+
+                    o12 = tuple([orb3, dir_, o3])
+                    if o12 in tapzp_keys:
+                        set_matrix_element(row,col,data,new_state,i,VS,tapzp_nn_hop_fac[o12]*ph)
+                        
+        if orb4 in tapzp_orbs:
+            for dir_ in tapzp_nn_hop_dir[orb4]:
+                vx, vy, vz = directions_to_vecs[dir_]
+                orbs4 = lat.get_unit_cell_rep(x4+vx, y4+vy, z4+vz)
+                if orbs4 == ['NotOnSublattice']:
+                    continue
+
+                if not vs.check_in_vs_condition1(x1,y1,x2,y2,x3,y3,x4+vx,y4+vy):
+                    continue
+
+                for o4 in orbs4:
+                    if o4 not in tapzp_orbs:
+                        continue
+                        
+                    # consider Pauli principle                    
+                    slabel = [s1,orb1,x1,y1,z1,s2,orb2,x2,y2,z2,s3,orb3,x3,y3,z3,s4,o4,x4+vx,y4+vy,z4+vz]
+                    if not vs.check_Pauli(slabel):
+                        continue  
+                        
+                    tmp_state = vs.create_state(slabel)
+                    new_state,ph,_ = vs.make_state_canonical(tmp_state)
+                    #new_state,ph = vs.make_state_canonical_old(tmp_state)
+
+                    o12 = tuple([orb4, dir_, o4])
+                    if o12 in tapzp_keys:
+                        set_matrix_element(row,col,data,new_state,i,VS,tapzp_nn_hop_fac[o12]*ph)
+                           
+
+    row = np.array(row)
+    col = np.array(col)
+    data = np.array(data)
+    
+    # check if hoppings occur within groups of (up,up), (dn,dn), and (up,dn) 
+    #assert(check_spin_group(row,col,data,VS)==True)
+    out = sps.coo_matrix((data,(row,col)),shape=(dim,dim))
+    
+    return out
+
+
 
 
    
@@ -1193,7 +1386,7 @@ def get_double_occu_list(VS):
             elif z2==0:            
                 util.get_double_append(i,14,s2,o2,x2,y2,z2,s3,o3,x3,y3,z3,s1,o1,x1,y1,z1,s4,o4,x4,y4,z4,\
                                    d_Cu_list,p_list,idx_Cu,hole34_Cu_part, double_Cu_part)
-            elif z1==1:
+            elif z2==1:
                 apz_list.append(i)                
                 
         if (x2, y2, z2)==(x4, y4, z4):
@@ -1203,7 +1396,7 @@ def get_double_occu_list(VS):
             elif z2==0:
                 util.get_double_append(i,13,s2,o2,x2,y2,z2,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s3,o3,x3,y3,z3,\
                                    d_Cu_list,p_list,idx_Cu,hole34_Cu_part, double_Cu_part) 
-            elif z1==1:
+            elif z2==1:
                 apz_list.append(i)              
                 
         if (x3, y3, z3)==(x4, y4, z4):
@@ -1213,7 +1406,7 @@ def get_double_occu_list(VS):
             elif z3==0:
                 util.get_double_append(i,12,s3,o3,x3,y3,z3,s4,o4,x4,y4,z4,s1,o1,x1,y1,z1,s2,o2,x2,y2,z2,\
                                    d_Cu_list,p_list,idx_Cu,hole34_Cu_part, double_Cu_part)
-            elif z1==1:
+            elif z3==1:
                 apz_list.append(i)                
                 
     print ("len(d_Ni_list)", len(d_Ni_list))
